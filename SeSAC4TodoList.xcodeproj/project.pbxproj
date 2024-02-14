@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA6871642B7CFC1B0079D8CB /* AddTodoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6871632B7CFC1B0079D8CB /* AddTodoViewController.swift */; };
+		FA6871672B7CFE120079D8CB /* AddTodoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6871662B7CFE120079D8CB /* AddTodoTableViewCell.swift */; };
+		FA68716A2B7D066E0079D8CB /* SeSACColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6871692B7D066E0079D8CB /* SeSACColor.swift */; };
+		FA68716C2B7D101E0079D8CB /* AddTodoTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA68716B2B7D101E0079D8CB /* AddTodoTableHeaderView.swift */; };
 		FAB4FF4B2B7CD19500B564DB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB4FF4A2B7CD19500B564DB /* AppDelegate.swift */; };
 		FAB4FF4D2B7CD19500B564DB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB4FF4C2B7CD19500B564DB /* SceneDelegate.swift */; };
 		FAB4FF4F2B7CD19500B564DB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB4FF4E2B7CD19500B564DB /* ViewController.swift */; };
@@ -22,6 +26,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA6871632B7CFC1B0079D8CB /* AddTodoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTodoViewController.swift; sourceTree = "<group>"; };
+		FA6871662B7CFE120079D8CB /* AddTodoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTodoTableViewCell.swift; sourceTree = "<group>"; };
+		FA6871692B7D066E0079D8CB /* SeSACColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeSACColor.swift; sourceTree = "<group>"; };
+		FA68716B2B7D101E0079D8CB /* AddTodoTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTodoTableHeaderView.swift; sourceTree = "<group>"; };
 		FAB4FF472B7CD19500B564DB /* SeSAC4TodoList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SeSAC4TodoList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAB4FF4A2B7CD19500B564DB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FAB4FF4C2B7CD19500B564DB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -49,6 +57,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FA6871652B7CFC1F0079D8CB /* AddTodo */ = {
+			isa = PBXGroup;
+			children = (
+				FA68716B2B7D101E0079D8CB /* AddTodoTableHeaderView.swift */,
+				FA6871632B7CFC1B0079D8CB /* AddTodoViewController.swift */,
+				FA6871662B7CFE120079D8CB /* AddTodoTableViewCell.swift */,
+			);
+			path = AddTodo;
+			sourceTree = "<group>";
+		};
+		FA6871682B7D06570079D8CB /* Enum */ = {
+			isa = PBXGroup;
+			children = (
+				FA6871692B7D066E0079D8CB /* SeSACColor.swift */,
+			);
+			path = Enum;
+			sourceTree = "<group>";
+		};
 		FAB4FF3E2B7CD19500B564DB = {
 			isa = PBXGroup;
 			children = (
@@ -68,8 +94,10 @@
 		FAB4FF492B7CD19500B564DB /* SeSAC4TodoList */ = {
 			isa = PBXGroup;
 			children = (
+				FA6871682B7D06570079D8CB /* Enum */,
 				FAB4FF5E2B7CD2A400B564DB /* Base */,
 				FAB4FF6E2B7CE21800B564DB /* Todo */,
+				FA6871652B7CFC1F0079D8CB /* AddTodo */,
 				FAB4FF612B7CD2BA00B564DB /* Category */,
 				FAB4FF4A2B7CD19500B564DB /* AppDelegate.swift */,
 				FAB4FF4C2B7CD19500B564DB /* SceneDelegate.swift */,
@@ -187,9 +215,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				FAB4FF692B7CD38200B564DB /* CategoryViewController.swift in Sources */,
+				FA68716A2B7D066E0079D8CB /* SeSACColor.swift in Sources */,
+				FA68716C2B7D101E0079D8CB /* AddTodoTableHeaderView.swift in Sources */,
 				FAB4FF4F2B7CD19500B564DB /* ViewController.swift in Sources */,
+				FA6871672B7CFE120079D8CB /* AddTodoTableViewCell.swift in Sources */,
 				FAB4FF602B7CD2AF00B564DB /* BaseViewController.swift in Sources */,
 				FAB4FF4B2B7CD19500B564DB /* AppDelegate.swift in Sources */,
+				FA6871642B7CFC1B0079D8CB /* AddTodoViewController.swift in Sources */,
 				FAB4FF6B2B7CD7C800B564DB /* CategoryCollectionViewCell.swift in Sources */,
 				FAB4FF6D2B7CDCF500B564DB /* TodoModel.swift in Sources */,
 				FAB4FF4D2B7CD19500B564DB /* SceneDelegate.swift in Sources */,

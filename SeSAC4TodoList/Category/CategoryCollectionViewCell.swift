@@ -18,7 +18,7 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        contentView.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1)
+        contentView.backgroundColor = SeSACColor.veryDarkGray.color
         contentView.clipsToBounds = true
         contentView.layer.cornerRadius = 16
         
@@ -49,7 +49,7 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
         
         countLabel.snp.makeConstraints { make in
             make.top.equalTo(iconImageView)
-            make.trailing.equalTo(contentView.safeAreaLayoutGuide).offset(8)
+            make.trailing.equalTo(contentView.safeAreaLayoutGuide)
             make.size.equalTo(40)
         }
     }
@@ -63,7 +63,7 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
         
         iconImageView.tintColor = .white
         
-        categoryLabel.font = .systemFont(ofSize: 16)
+        categoryLabel.font = .boldSystemFont(ofSize: 16)
         categoryLabel.textColor = .gray
         
         countLabel.font = .boldSystemFont(ofSize: 40)

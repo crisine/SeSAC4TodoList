@@ -21,6 +21,23 @@ final class CategoryViewController: BaseViewController {
         todoCollectionView.delegate = self
         todoCollectionView.dataSource = self
         todoCollectionView.register(CategoryCollectionViewCell.self, forCellWithReuseIdentifier: "CategoryCollectionViewCell")
+        
+        navigationController?.isToolbarHidden = false
+        
+        let todoAddButton = UIBarButtonItem(title: "새로운 할 일", style: .plain, target: self, action: #selector(didTodoAddButtonTapped))
+        let listAddButton = UIBarButtonItem(title: "목록 추가", style: .plain, target: self, action: #selector(didListAddButtonTapped))
+        
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
+        toolbarItems = [todoAddButton, flexibleSpace, listAddButton]
+    }
+    
+    @objc func didTodoAddButtonTapped() {
+        let vc = UINavigationController(rootViewController: AddTodoViewController())
+        present(vc, animated: true)
+    }
+    
+    @objc func didListAddButtonTapped() {
+        print(#function)
     }
     
     override func configureHierarchy() {
