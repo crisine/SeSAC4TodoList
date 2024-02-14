@@ -70,7 +70,7 @@ class AddTodoTableViewCell: UITableViewCell {
         subtitleLabel.snp.makeConstraints { make in
             make.centerY.equalTo(backView)
             make.trailing.equalTo(modifyButton.snp.leading).offset(-8)
-            make.width.lessThanOrEqualTo(100)
+            make.width.lessThanOrEqualTo(160)
         }
     }
     
@@ -80,6 +80,8 @@ class AddTodoTableViewCell: UITableViewCell {
         backView.backgroundColor = SeSACColor.slightDarkGray.color
         backView.clipsToBounds = true
         backView.layer.cornerRadius = 16
+        
+        selectionStyle = .none
     }
     
     required init?(coder: NSCoder) {

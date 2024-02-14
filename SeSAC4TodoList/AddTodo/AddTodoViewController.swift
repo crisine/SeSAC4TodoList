@@ -18,6 +18,13 @@ class AddTodoViewController: BaseViewController {
     let addTodoTableView = UITableView()
     let todoCategoryList = AddTodoCategory.allCases
     
+    var selectedDate: String? {
+        didSet {
+            addTodoTableView.reloadData()
+            print("tableview Reload")
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -40,11 +47,15 @@ class AddTodoViewController: BaseViewController {
     }
     
     @objc func didCancelBarButtonItemTapped() {
-        
+        dismiss(animated: true)
     }
     
     @objc func didDoneBarButtonItemTapped() {
-        
+        showAlert(title: "새 할일", message: "저장하시겠습니까?", okTitle: "저장") {
+            // TODO: DB를 통해 저장 등...
+            
+            self.dismiss(animated: true)
+        }
     }
 
     override func configureHierarchy() {
@@ -82,10 +93,38 @@ extension AddTodoViewController: UITableViewDelegate, UITableViewDataSource {
         
         cell.titleLabel.text = todoCategoryList[index].rawValue
         
-        // TODO: 해당하는 VC에 따라서 closure를 통해 값 전달받기
-        cell.subtitleLabel.text = ""
+        switch todoCategoryList[index] {
+        case .duedate:
+            cell.subtitleLabel.text = selectedDate
+        case .tag:
+            cell.subtitleLabel.text = ""
+        case .priority:
+            cell.subtitleLabel.text = ""
+        }
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let index = indexPath.row
+        let selectedRowType = todoCategoryList[index]
+        
+        switch selectedRowType {
+        case .duedate:
+            let vc = DueDateViewController()
+            
+            vc.dateSpace = { date in
+                print("dateSpace 전달됨")
+                print("날짜 뷰에서 \(date) 가 선택되었습니다")
+                self.selectedDate = date
+            }
+            
+            navigationController?.pushViewController(vc, animated: true)
+        case .tag:
+            print("우선순위 값을 텍스트필드로 입력할 수 있는 뷰로 이동")
+        case .priority:
+            print("우선순위 세그먼트 달린 뷰로 이동")
+        }
     }
     
 }
