@@ -13,6 +13,12 @@
 		FAB4FF522B7CD19500B564DB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAB4FF502B7CD19500B564DB /* Main.storyboard */; };
 		FAB4FF542B7CD19700B564DB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAB4FF532B7CD19700B564DB /* Assets.xcassets */; };
 		FAB4FF572B7CD19700B564DB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAB4FF552B7CD19700B564DB /* LaunchScreen.storyboard */; };
+		FAB4FF602B7CD2AF00B564DB /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB4FF5F2B7CD2AF00B564DB /* BaseViewController.swift */; };
+		FAB4FF642B7CD32000B564DB /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = FAB4FF632B7CD32000B564DB /* SnapKit */; };
+		FAB4FF672B7CD34C00B564DB /* Toast in Frameworks */ = {isa = PBXBuildFile; productRef = FAB4FF662B7CD34C00B564DB /* Toast */; };
+		FAB4FF692B7CD38200B564DB /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB4FF682B7CD38200B564DB /* CategoryViewController.swift */; };
+		FAB4FF6B2B7CD7C800B564DB /* CategoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB4FF6A2B7CD7C800B564DB /* CategoryCollectionViewCell.swift */; };
+		FAB4FF6D2B7CDCF500B564DB /* TodoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB4FF6C2B7CDCF500B564DB /* TodoModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +30,10 @@
 		FAB4FF532B7CD19700B564DB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FAB4FF562B7CD19700B564DB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FAB4FF582B7CD19700B564DB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FAB4FF5F2B7CD2AF00B564DB /* BaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		FAB4FF682B7CD38200B564DB /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
+		FAB4FF6A2B7CD7C800B564DB /* CategoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCollectionViewCell.swift; sourceTree = "<group>"; };
+		FAB4FF6C2B7CDCF500B564DB /* TodoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +41,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAB4FF672B7CD34C00B564DB /* Toast in Frameworks */,
+				FAB4FF642B7CD32000B564DB /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -56,6 +68,9 @@
 		FAB4FF492B7CD19500B564DB /* SeSAC4TodoList */ = {
 			isa = PBXGroup;
 			children = (
+				FAB4FF5E2B7CD2A400B564DB /* Base */,
+				FAB4FF6E2B7CE21800B564DB /* Todo */,
+				FAB4FF612B7CD2BA00B564DB /* Category */,
 				FAB4FF4A2B7CD19500B564DB /* AppDelegate.swift */,
 				FAB4FF4C2B7CD19500B564DB /* SceneDelegate.swift */,
 				FAB4FF4E2B7CD19500B564DB /* ViewController.swift */,
@@ -65,6 +80,31 @@
 				FAB4FF582B7CD19700B564DB /* Info.plist */,
 			);
 			path = SeSAC4TodoList;
+			sourceTree = "<group>";
+		};
+		FAB4FF5E2B7CD2A400B564DB /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				FAB4FF5F2B7CD2AF00B564DB /* BaseViewController.swift */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		FAB4FF612B7CD2BA00B564DB /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				FAB4FF682B7CD38200B564DB /* CategoryViewController.swift */,
+				FAB4FF6A2B7CD7C800B564DB /* CategoryCollectionViewCell.swift */,
+			);
+			path = Category;
+			sourceTree = "<group>";
+		};
+		FAB4FF6E2B7CE21800B564DB /* Todo */ = {
+			isa = PBXGroup;
+			children = (
+				FAB4FF6C2B7CDCF500B564DB /* TodoModel.swift */,
+			);
+			path = Todo;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -83,6 +123,10 @@
 			dependencies = (
 			);
 			name = SeSAC4TodoList;
+			packageProductDependencies = (
+				FAB4FF632B7CD32000B564DB /* SnapKit */,
+				FAB4FF662B7CD34C00B564DB /* Toast */,
+			);
 			productName = SeSAC4TodoList;
 			productReference = FAB4FF472B7CD19500B564DB /* SeSAC4TodoList.app */;
 			productType = "com.apple.product-type.application";
@@ -111,6 +155,10 @@
 				Base,
 			);
 			mainGroup = FAB4FF3E2B7CD19500B564DB;
+			packageReferences = (
+				FAB4FF622B7CD32000B564DB /* XCRemoteSwiftPackageReference "SnapKit" */,
+				FAB4FF652B7CD34C00B564DB /* XCRemoteSwiftPackageReference "Toast-Swift" */,
+			);
 			productRefGroup = FAB4FF482B7CD19500B564DB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -138,8 +186,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAB4FF692B7CD38200B564DB /* CategoryViewController.swift in Sources */,
 				FAB4FF4F2B7CD19500B564DB /* ViewController.swift in Sources */,
+				FAB4FF602B7CD2AF00B564DB /* BaseViewController.swift in Sources */,
 				FAB4FF4B2B7CD19500B564DB /* AppDelegate.swift in Sources */,
+				FAB4FF6B2B7CD7C800B564DB /* CategoryCollectionViewCell.swift in Sources */,
+				FAB4FF6D2B7CDCF500B564DB /* TodoModel.swift in Sources */,
 				FAB4FF4D2B7CD19500B564DB /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -369,6 +421,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		FAB4FF622B7CD32000B564DB /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.0;
+			};
+		};
+		FAB4FF652B7CD34C00B564DB /* XCRemoteSwiftPackageReference "Toast-Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scalessec/Toast-Swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FAB4FF632B7CD32000B564DB /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB4FF622B7CD32000B564DB /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		FAB4FF662B7CD34C00B564DB /* Toast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB4FF652B7CD34C00B564DB /* XCRemoteSwiftPackageReference "Toast-Swift" */;
+			productName = Toast;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = FAB4FF3F2B7CD19500B564DB /* Project object */;
 }
