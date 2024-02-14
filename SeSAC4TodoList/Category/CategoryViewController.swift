@@ -24,7 +24,15 @@ final class CategoryViewController: BaseViewController {
         
         navigationController?.isToolbarHidden = false
         
-        let todoAddButton = UIBarButtonItem(title: "새로운 할 일", style: .plain, target: self, action: #selector(didTodoAddButtonTapped))
+        let customizedTodoAddButton = UIButton(type: .system)
+    
+        customizedTodoAddButton.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
+        customizedTodoAddButton.setTitle(" 새로운 할 일", for: .normal)
+        customizedTodoAddButton.addTarget(self, action: #selector(didTodoAddButtonTapped), for: .touchUpInside)
+        customizedTodoAddButton.sizeToFit()
+        
+        let todoAddButton = UIBarButtonItem(customView: customizedTodoAddButton)
+        
         let listAddButton = UIBarButtonItem(title: "목록 추가", style: .plain, target: self, action: #selector(didListAddButtonTapped))
         
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
@@ -87,11 +95,10 @@ extension CategoryViewController: UICollectionViewDelegate, UICollectionViewData
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        // TODO: collectionViewCell 정의 필요
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCollectionViewCell", for: indexPath) as! CategoryCollectionViewCell
         let index = indexPath.row
         
-//        cell.iconImageView.image = todoTypeList[index].image
+        // cell.iconImageView.image = todoTypeList[index].image
         cell.iconImageView.backgroundColor = todoTypeList[index].backgroundColor
         cell.categoryLabel.text = todoTypeList[index].rawValue
         cell.countLabel.text = "0"

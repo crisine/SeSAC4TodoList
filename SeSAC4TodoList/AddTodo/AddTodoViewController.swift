@@ -25,6 +25,12 @@ class AddTodoViewController: BaseViewController {
         }
     }
     
+    var selectedTag: String? {
+        didSet {
+            addTodoTableView.reloadData()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -34,6 +40,13 @@ class AddTodoViewController: BaseViewController {
         addTodoTableView.dataSource = self
         addTodoTableView.register(AddTodoTableViewCell.self, forCellReuseIdentifier: "AddTodoTableViewCell")
         
+        NotificationCenter.default.addObserver(self, selector: #selector(recievedNotificationFromTagViewController), name: NSNotification.Name("tagNotification"), object: nil)
+    }
+    
+    @objc func recievedNotificationFromTagViewController(notification: NSNotification) {
+        if let value = notification.userInfo?["tag"] as? String {
+            selectedTag = value
+        }
     }
     
     private func configureNavigation() {
@@ -97,7 +110,7 @@ extension AddTodoViewController: UITableViewDelegate, UITableViewDataSource {
         case .duedate:
             cell.subtitleLabel.text = selectedDate
         case .tag:
-            cell.subtitleLabel.text = ""
+            cell.subtitleLabel.text = selectedTag
         case .priority:
             cell.subtitleLabel.text = ""
         }
@@ -121,7 +134,8 @@ extension AddTodoViewController: UITableViewDelegate, UITableViewDataSource {
             
             navigationController?.pushViewController(vc, animated: true)
         case .tag:
-            print("우선순위 값을 텍스트필드로 입력할 수 있는 뷰로 이동")
+            let vc = TagViewController()
+            navigationController?.pushViewController(vc, animated: true)
         case .priority:
             print("우선순위 세그먼트 달린 뷰로 이동")
         }
