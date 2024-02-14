@@ -7,11 +7,12 @@
 
 import UIKit
 
-enum Priority: String {
+enum Priority: String, CaseIterable {
     
-    case high = "높음"
-    case middle = "중간"
     case low = "낮음"
+    case middle = "중간"
+    case high = "높음"
+    
 }
 
 enum TodoType: String, CaseIterable{

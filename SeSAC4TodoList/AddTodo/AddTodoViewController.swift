@@ -13,10 +13,18 @@ enum AddTodoCategory: String, CaseIterable {
     case priority = "우선순위"
 }
 
-class AddTodoViewController: BaseViewController {
+protocol PassDataDelegate {
+    func priorityReceived(priority: String)
+}
+
+class AddTodoViewController: BaseViewController, PassDataDelegate {
 
     let addTodoTableView = UITableView()
     let todoCategoryList = AddTodoCategory.allCases
+    
+    func priorityReceived(priority: String) {
+        selectedPriority = priority
+    }
     
     var selectedDate: String? {
         didSet {
@@ -26,6 +34,12 @@ class AddTodoViewController: BaseViewController {
     }
     
     var selectedTag: String? {
+        didSet {
+            addTodoTableView.reloadData()
+        }
+    }
+    
+    var selectedPriority: String? {
         didSet {
             addTodoTableView.reloadData()
         }
@@ -112,7 +126,7 @@ extension AddTodoViewController: UITableViewDelegate, UITableViewDataSource {
         case .tag:
             cell.subtitleLabel.text = selectedTag
         case .priority:
-            cell.subtitleLabel.text = ""
+            cell.subtitleLabel.text = selectedPriority
         }
         
         return cell
@@ -133,11 +147,15 @@ extension AddTodoViewController: UITableViewDelegate, UITableViewDataSource {
             }
             
             navigationController?.pushViewController(vc, animated: true)
+            
         case .tag:
             let vc = TagViewController()
             navigationController?.pushViewController(vc, animated: true)
+            
         case .priority:
-            print("우선순위 세그먼트 달린 뷰로 이동")
+            let vc = PriorityViewController()
+            vc.delegate = self
+            navigationController?.pushViewController(vc, animated: true)
         }
     }
     

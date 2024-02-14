@@ -14,6 +14,7 @@
 		FA68716F2B7D1D2D0079D8CB /* DueDateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA68716E2B7D1D2D0079D8CB /* DueDateViewController.swift */; };
 		FA6871722B7D1D7F0079D8CB /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = FA6871712B7D1D7F0079D8CB /* FSCalendar */; };
 		FA6871752B7D2C630079D8CB /* TagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6871742B7D2C630079D8CB /* TagViewController.swift */; };
+		FA6871792B7D2FDC0079D8CB /* PriorityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6871782B7D2FDC0079D8CB /* PriorityViewController.swift */; };
 		FAB4FF4B2B7CD19500B564DB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB4FF4A2B7CD19500B564DB /* AppDelegate.swift */; };
 		FAB4FF4D2B7CD19500B564DB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB4FF4C2B7CD19500B564DB /* SceneDelegate.swift */; };
 		FAB4FF4F2B7CD19500B564DB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB4FF4E2B7CD19500B564DB /* ViewController.swift */; };
@@ -35,6 +36,7 @@
 		FA68716B2B7D101E0079D8CB /* AddTodoTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTodoTableHeaderView.swift; sourceTree = "<group>"; };
 		FA68716E2B7D1D2D0079D8CB /* DueDateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DueDateViewController.swift; sourceTree = "<group>"; };
 		FA6871742B7D2C630079D8CB /* TagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewController.swift; sourceTree = "<group>"; };
+		FA6871782B7D2FDC0079D8CB /* PriorityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityViewController.swift; sourceTree = "<group>"; };
 		FAB4FF472B7CD19500B564DB /* SeSAC4TodoList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SeSAC4TodoList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAB4FF4A2B7CD19500B564DB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FAB4FF4C2B7CD19500B564DB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -97,6 +99,14 @@
 			path = Tag;
 			sourceTree = "<group>";
 		};
+		FA6871762B7D2FC90079D8CB /* Priority */ = {
+			isa = PBXGroup;
+			children = (
+				FA6871782B7D2FDC0079D8CB /* PriorityViewController.swift */,
+			);
+			path = Priority;
+			sourceTree = "<group>";
+		};
 		FAB4FF3E2B7CD19500B564DB = {
 			isa = PBXGroup;
 			children = (
@@ -123,6 +133,7 @@
 				FA6871652B7CFC1F0079D8CB /* AddTodo */,
 				FA68716D2B7D1D0B0079D8CB /* DueDate */,
 				FA6871732B7D2C300079D8CB /* Tag */,
+				FA6871762B7D2FC90079D8CB /* Priority */,
 				FAB4FF4A2B7CD19500B564DB /* AppDelegate.swift */,
 				FAB4FF4C2B7CD19500B564DB /* SceneDelegate.swift */,
 				FAB4FF4E2B7CD19500B564DB /* ViewController.swift */,
@@ -250,6 +261,7 @@
 				FAB4FF602B7CD2AF00B564DB /* BaseViewController.swift in Sources */,
 				FAB4FF4B2B7CD19500B564DB /* AppDelegate.swift in Sources */,
 				FA6871642B7CFC1B0079D8CB /* AddTodoViewController.swift in Sources */,
+				FA6871792B7D2FDC0079D8CB /* PriorityViewController.swift in Sources */,
 				FAB4FF6B2B7CD7C800B564DB /* CategoryCollectionViewCell.swift in Sources */,
 				FAB4FF6D2B7CDCF500B564DB /* TodoModel.swift in Sources */,
 				FAB4FF4D2B7CD19500B564DB /* SceneDelegate.swift in Sources */,
