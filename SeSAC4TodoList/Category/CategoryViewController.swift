@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 final class CategoryViewController: BaseViewController {
 
@@ -14,6 +15,12 @@ final class CategoryViewController: BaseViewController {
     private let todoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: configureCollectionViewFlowLayout())
 
     private let todoTypeList = TodoType.allCases
+    
+    var todoList: [TodoModel] = [] {
+        didSet {
+            todoCollectionView.reloadData()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,6 +44,11 @@ final class CategoryViewController: BaseViewController {
         
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
         toolbarItems = [todoAddButton, flexibleSpace, listAddButton]
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        let realm = try! Realm()
+        todoList = realm.objects(TodoModel.self).map { $0 }
     }
     
     @objc func didTodoAddButtonTapped() {
@@ -72,7 +84,7 @@ final class CategoryViewController: BaseViewController {
         
         titleLabel.font = .boldSystemFont(ofSize: 32)
         titleLabel.textColor = .darkGray
-        titleLabel.text = "전체"
+        titleLabel.text = "할 일 목록"
     }
     
     static private func configureCollectionViewFlowLayout() -> UICollectionViewFlowLayout {
@@ -103,7 +115,18 @@ extension CategoryViewController: UICollectionViewDelegate, UICollectionViewData
         cell.iconImageView.image = todoTypeList[index].image
         cell.iconImageView.backgroundColor = todoTypeList[index].backgroundColor
         cell.categoryLabel.text = todoTypeList[index].rawValue
-        cell.countLabel.text = "0"
+        
+        // TODO: realm에서 가져온 정보에 따라서 개수를 표시해야 함 (Option)
+        switch todoTypeList[index] {
+        // case .today:
+        // case .scheduled:
+        case .all:
+            cell.countLabel.text = String(todoList.count)
+        // case .flagged:
+        // case .completed:
+        default:
+            cell.countLabel.text = "0"
+        }
         
         return cell
     }

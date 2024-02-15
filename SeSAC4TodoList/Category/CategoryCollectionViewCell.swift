@@ -56,9 +56,11 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
     
     private func configureView() {
         // TODO: View Lifecycle를 조사하고, view의 크기가 결정되는 시점에 이것을 불러야 함.
-        iconImageView.clipsToBounds = true
-        iconImageView.layer.cornerRadius = iconImageView.frame.width / 2
-        iconImageView.contentMode = .scaleToFill
+        DispatchQueue.main.async {
+            self.iconImageView.clipsToBounds = true
+            self.iconImageView.layer.cornerRadius = self.iconImageView.frame.width / 2
+            self.iconImageView.contentMode = .scaleToFill
+        }
         
         print(iconImageView.frame.height)
         
