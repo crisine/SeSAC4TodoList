@@ -98,12 +98,24 @@ extension CategoryViewController: UICollectionViewDelegate, UICollectionViewData
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCollectionViewCell", for: indexPath) as! CategoryCollectionViewCell
         let index = indexPath.row
         
-        // cell.iconImageView.image = todoTypeList[index].image
+        // TODO: 심볼 이미지의 크기를 조정할 수 있게 할 것.
+        // MARK: 현재 문제 1. 시스템 이미지 크기에 따라 높이가 제각각 2. size를 40x40으로 설정했음에도 아이콘에 따라 height가 들쭉날쭉해짐
+        cell.iconImageView.image = todoTypeList[index].image
         cell.iconImageView.backgroundColor = todoTypeList[index].backgroundColor
         cell.categoryLabel.text = todoTypeList[index].rawValue
         cell.countLabel.text = "0"
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let index = indexPath.row
+        
+        if todoTypeList[index] == .all {
+            print("전체 화면 보여주기 네비게이션으로 이동")
+            
+            navigationController?.pushViewController(TodoViewController(), animated: true)
+        }
     }
     
 }

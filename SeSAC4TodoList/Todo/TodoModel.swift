@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 enum Priority: String, CaseIterable {
     
@@ -13,6 +14,16 @@ enum Priority: String, CaseIterable {
     case middle = "중간"
     case high = "높음"
     
+    var intValue: Int {
+        switch self {
+        case .low:
+            return 0
+        case .middle:
+            return 1
+        case .high:
+            return 2
+        }
+    }
 }
 
 enum TodoType: String, CaseIterable{
@@ -54,13 +65,20 @@ enum TodoType: String, CaseIterable{
     }
 }
 
-struct TodoModel {
-    
-    var title: String       // 제목
-    var description: String // 메모
-    var iconImage: UIImage  // 아이콘 이미지
-    var dueDate: Date       // 마감일
-    var isCompleted: Bool   // 완료 여부
-    var isFlagged: Bool     // 깃발 여부
-    var priority: Priority  // 우선 순위
+class TodoModel: Object {
+    @Persisted(primaryKey: true) var id: ObjectId
+    @Persisted var title: String
+    @Persisted var memo: String?
+    @Persisted var dueDate: Date?
+    @Persisted var tag: String?
+    @Persisted var priority: Int?
+
+    convenience init(title: String, memo: String? = nil, dueDate: Date? = nil, tag: String? = nil, priority: Int? = nil) {
+        self.init()
+        self.title = title
+        self.memo = memo
+        self.dueDate = dueDate
+        self.tag = tag
+        self.priority = priority
+    }
 }

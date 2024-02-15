@@ -12,7 +12,7 @@ class AddTodoTableHeaderView: UIView {
     let backView = UIView()
     let separatorLineView = UIView()
     let titleTextField = UITextField()
-    let descriptionTextView = UITextView()
+    let memoTextView = UITextView()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -23,7 +23,7 @@ class AddTodoTableHeaderView: UIView {
     }
     
     private func configureHierarchy() {
-        [backView, separatorLineView, titleTextField, descriptionTextView].forEach {
+        [backView, separatorLineView, titleTextField, memoTextView].forEach {
             addSubview($0)
         }
     }
@@ -45,7 +45,7 @@ class AddTodoTableHeaderView: UIView {
             make.height.equalTo(0.5)
         }
         
-        descriptionTextView.snp.makeConstraints { make in
+        memoTextView.snp.makeConstraints { make in
             make.top.equalTo(separatorLineView.snp.bottom).offset(4)
             make.horizontalEdges.equalTo(backView).inset(8)
             make.bottom.equalTo(backView.snp.bottom).inset(8)
@@ -64,10 +64,10 @@ class AddTodoTableHeaderView: UIView {
         titleTextField.attributedPlaceholder = NSAttributedString(string: "제목", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
         titleTextField.textColor = .white
         
-        descriptionTextView.backgroundColor = .clear
-        descriptionTextView.textColor = .gray
-        descriptionTextView.text = "메모"
-        descriptionTextView.font = .systemFont(ofSize: 17)
+        memoTextView.backgroundColor = .clear
+        memoTextView.textColor = .gray
+        memoTextView.text = "메모"
+        memoTextView.font = .systemFont(ofSize: 17)
     }
     
     

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA0811262B7E59DB00243BC8 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = FA0811252B7E59DB00243BC8 /* Realm */; };
+		FA0811282B7E59DB00243BC8 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = FA0811272B7E59DB00243BC8 /* RealmSwift */; };
+		FA08112A2B7E5D5C00243BC8 /* TodoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0811292B7E5D5C00243BC8 /* TodoViewController.swift */; };
+		FA08112C2B7E5DA900243BC8 /* TodoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA08112B2B7E5DA900243BC8 /* TodoTableViewCell.swift */; };
 		FA6871642B7CFC1B0079D8CB /* AddTodoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6871632B7CFC1B0079D8CB /* AddTodoViewController.swift */; };
 		FA6871672B7CFE120079D8CB /* AddTodoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6871662B7CFE120079D8CB /* AddTodoTableViewCell.swift */; };
 		FA68716A2B7D066E0079D8CB /* SeSACColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6871692B7D066E0079D8CB /* SeSACColor.swift */; };
@@ -30,6 +34,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA0811292B7E5D5C00243BC8 /* TodoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoViewController.swift; sourceTree = "<group>"; };
+		FA08112B2B7E5DA900243BC8 /* TodoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoTableViewCell.swift; sourceTree = "<group>"; };
 		FA6871632B7CFC1B0079D8CB /* AddTodoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTodoViewController.swift; sourceTree = "<group>"; };
 		FA6871662B7CFE120079D8CB /* AddTodoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTodoTableViewCell.swift; sourceTree = "<group>"; };
 		FA6871692B7D066E0079D8CB /* SeSACColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeSACColor.swift; sourceTree = "<group>"; };
@@ -58,6 +64,8 @@
 			files = (
 				FAB4FF672B7CD34C00B564DB /* Toast in Frameworks */,
 				FA6871722B7D1D7F0079D8CB /* FSCalendar in Frameworks */,
+				FA0811262B7E59DB00243BC8 /* Realm in Frameworks */,
+				FA0811282B7E59DB00243BC8 /* RealmSwift in Frameworks */,
 				FAB4FF642B7CD32000B564DB /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -166,6 +174,8 @@
 			isa = PBXGroup;
 			children = (
 				FAB4FF6C2B7CDCF500B564DB /* TodoModel.swift */,
+				FA0811292B7E5D5C00243BC8 /* TodoViewController.swift */,
+				FA08112B2B7E5DA900243BC8 /* TodoTableViewCell.swift */,
 			);
 			path = Todo;
 			sourceTree = "<group>";
@@ -190,6 +200,8 @@
 				FAB4FF632B7CD32000B564DB /* SnapKit */,
 				FAB4FF662B7CD34C00B564DB /* Toast */,
 				FA6871712B7D1D7F0079D8CB /* FSCalendar */,
+				FA0811252B7E59DB00243BC8 /* Realm */,
+				FA0811272B7E59DB00243BC8 /* RealmSwift */,
 			);
 			productName = SeSAC4TodoList;
 			productReference = FAB4FF472B7CD19500B564DB /* SeSAC4TodoList.app */;
@@ -223,6 +235,7 @@
 				FAB4FF622B7CD32000B564DB /* XCRemoteSwiftPackageReference "SnapKit" */,
 				FAB4FF652B7CD34C00B564DB /* XCRemoteSwiftPackageReference "Toast-Swift" */,
 				FA6871702B7D1D7F0079D8CB /* XCRemoteSwiftPackageReference "FSCalendar" */,
+				FA0811242B7E59DB00243BC8 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = FAB4FF482B7CD19500B564DB /* Products */;
 			projectDirPath = "";
@@ -261,6 +274,8 @@
 				FAB4FF602B7CD2AF00B564DB /* BaseViewController.swift in Sources */,
 				FAB4FF4B2B7CD19500B564DB /* AppDelegate.swift in Sources */,
 				FA6871642B7CFC1B0079D8CB /* AddTodoViewController.swift in Sources */,
+				FA08112A2B7E5D5C00243BC8 /* TodoViewController.swift in Sources */,
+				FA08112C2B7E5DA900243BC8 /* TodoTableViewCell.swift in Sources */,
 				FA6871792B7D2FDC0079D8CB /* PriorityViewController.swift in Sources */,
 				FAB4FF6B2B7CD7C800B564DB /* CategoryCollectionViewCell.swift in Sources */,
 				FAB4FF6D2B7CDCF500B564DB /* TodoModel.swift in Sources */,
@@ -495,6 +510,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		FA0811242B7E59DB00243BC8 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 10.47.0;
+			};
+		};
 		FA6871702B7D1D7F0079D8CB /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/WenchaoD/FSCalendar.git";
@@ -522,6 +545,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		FA0811252B7E59DB00243BC8 /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA0811242B7E59DB00243BC8 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		FA0811272B7E59DB00243BC8 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA0811242B7E59DB00243BC8 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
 		FA6871712B7D1D7F0079D8CB /* FSCalendar */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = FA6871702B7D1D7F0079D8CB /* XCRemoteSwiftPackageReference "FSCalendar" */;

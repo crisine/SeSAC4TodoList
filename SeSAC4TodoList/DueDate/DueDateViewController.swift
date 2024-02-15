@@ -23,7 +23,7 @@ class DueDateViewController: BaseViewController {
         return calendar
     }()
     var selectedDate: Date?
-    var dateSpace: ((String) -> Void)?
+    var dateSpace: ((Date) -> Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,10 +34,7 @@ class DueDateViewController: BaseViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         if let selectedDate {
-            let dateformatter = DateFormatter()
-            dateformatter.dateFormat = "yyyy년 MM월 dd일"
-        
-            dateSpace?(dateformatter.string(from: selectedDate))
+            dateSpace?(selectedDate)
         }
     }
 

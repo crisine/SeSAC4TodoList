@@ -6,18 +6,20 @@
 //
 
 import UIKit
+import SnapKit
 
 class PriorityViewController: BaseViewController {
 
-    let priorityList: [String] = Priority.allCases.map { $0.rawValue }
-    lazy var segmentedControl = UISegmentedControl(items: priorityList)
+    let priorityList = Priority.allCases
+    lazy var segmentedControl = UISegmentedControl(items: priorityList.map { $0.rawValue })
     
     var delegate: PassDataDelegate?
-    var selectedPriority: String?
+    var selectedPriority: Priority?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        print("PriorityViewDidLoad")
         segmentedControl.addTarget(self, action: #selector(didSegmentValueChanged), for: .valueChanged)
     }
     
@@ -46,6 +48,6 @@ class PriorityViewController: BaseViewController {
     
     @objc func didSegmentValueChanged(sender: UISegmentedControl) {
         let index = sender.selectedSegmentIndex
-        selectedPriority = priorityList[sender.selectedSegmentIndex]
+        selectedPriority = priorityList[index]
     }
 }

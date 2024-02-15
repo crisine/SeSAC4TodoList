@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 enum AddTodoCategory: String, CaseIterable {
     case duedate = "마감일"
@@ -14,7 +15,7 @@ enum AddTodoCategory: String, CaseIterable {
 }
 
 protocol PassDataDelegate {
-    func priorityReceived(priority: String)
+    func priorityReceived(priority: Priority)
 }
 
 class AddTodoViewController: BaseViewController, PassDataDelegate {
@@ -22,24 +23,21 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
     let addTodoTableView = UITableView()
     let todoCategoryList = AddTodoCategory.allCases
     
-    func priorityReceived(priority: String) {
+    func priorityReceived(priority: Priority) {
         selectedPriority = priority
     }
     
-    var selectedDate: String? {
+    var selectedDate: Date? {
         didSet {
             addTodoTableView.reloadData()
-            print("tableview Reload")
         }
     }
-    
     var selectedTag: String? {
         didSet {
             addTodoTableView.reloadData()
         }
     }
-    
-    var selectedPriority: String? {
+    var selectedPriority: Priority? {
         didSet {
             addTodoTableView.reloadData()
         }
@@ -80,6 +78,23 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
     @objc func didDoneBarButtonItemTapped() {
         showAlert(title: "새 할일", message: "저장하시겠습니까?", okTitle: "저장") {
             // TODO: DB를 통해 저장 등...
+            
+            let realm = try! Realm()
+            print(realm.configuration.fileURL)
+            
+            if let headerView = self.addTodoTableView.tableHeaderView as? AddTodoTableHeaderView {
+                
+                guard let title = headerView.titleTextField.text else { return }
+                let memo = headerView.memoTextView.text
+                
+                // TODO: 선택된 중요도 넣기
+                let data = TodoModel(title: title, memo: memo, dueDate: self.selectedDate, tag: self.selectedTag, priority: self.selectedPriority?.intValue)
+                
+                try! realm.write {
+                    realm.add(data)
+                    print("Realm Create Called")
+                }
+            }
             
             self.dismiss(animated: true)
         }
@@ -122,11 +137,16 @@ extension AddTodoViewController: UITableViewDelegate, UITableViewDataSource {
         
         switch todoCategoryList[index] {
         case .duedate:
-            cell.subtitleLabel.text = selectedDate
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy. MM. dd."
+            
+            if let selectedDate {
+                cell.subtitleLabel.text = formatter.string(from: selectedDate)
+            }
         case .tag:
             cell.subtitleLabel.text = selectedTag
         case .priority:
-            cell.subtitleLabel.text = selectedPriority
+            cell.subtitleLabel.text = selectedPriority?.rawValue
         }
         
         return cell
