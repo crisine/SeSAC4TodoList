@@ -15,7 +15,7 @@ enum AddTodoCategory: String, CaseIterable {
 }
 
 protocol PassDataDelegate {
-    func priorityReceived(priority: Priority)
+    func priorityReceived(priority: Int?)
 }
 
 class AddTodoViewController: BaseViewController, PassDataDelegate {
@@ -24,9 +24,14 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
     let todoCategoryList = AddTodoCategory.allCases
     lazy var todoHeaderView = AddTodoTableHeaderView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 160))
     
-    func priorityReceived(priority: Priority) {
+    func priorityReceived(priority: Int?) {
         selectedPriority = priority
     }
+    
+    var titleString: String?
+    var memoString: String?
+    var modifyMode: Bool = false
+    var modifyTodo: TodoModel?
     
     var selectedDate: Date? {
         didSet {
@@ -38,7 +43,7 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
             addTodoTableView.reloadData()
         }
     }
-    var selectedPriority: Priority? {
+    var selectedPriority: Int? {
         didSet {
             addTodoTableView.reloadData()
         }
@@ -64,9 +69,16 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
     
     private func configureNavigation() {
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
-        navigationItem.title = "새로운 할 일"
+        
+        let navigationTitleString = modifyMode == true ? "할 일 수정" : "새로운 할 일"
+        
+        navigationItem.title = navigationTitleString
+        
         let cancelBarButtonItem = UIBarButtonItem(title: "취소", style: .plain, target: self, action: #selector(didCancelBarButtonItemTapped))
-        let doneBarButtonItem = UIBarButtonItem(title: "추가", style: .done, target: self, action: #selector(didDoneBarButtonItemTapped))
+        
+        let doneBarButtonTitle = modifyMode == true ? "수정" : "추가"
+        
+        let doneBarButtonItem = UIBarButtonItem(title: doneBarButtonTitle, style: .done, target: self, action: #selector(didDoneBarButtonItemTapped))
         
         navigationItem.leftBarButtonItem = cancelBarButtonItem
         navigationItem.rightBarButtonItem = doneBarButtonItem
@@ -98,10 +110,15 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
                 let memo = headerView.memoTextView.text == "메모" ? nil : headerView.memoTextView.text
                 
                 // TODO: 선택된 중요도 넣기
-                let data = TodoModel(title: title, memo: memo, dueDate: self.selectedDate, tag: self.selectedTag, priority: self.selectedPriority?.intValue)
+                let data = TodoModel(title: title, memo: memo, dueDate: self.selectedDate, tag: self.selectedTag, priority: self.selectedPriority)
                 
                 try! realm.write {
-                    realm.add(data)
+                    if self.modifyMode == true {
+                        // TODO: 수정 뷰에서는 완료 여부를 수정할 수 있게 하면 여기서 self.modifyTodo.isCompleted가 아니라, self.isCompleted 이렇게 접근해야 한다.
+                        realm.create(TodoModel.self, value: ["id": self.modifyTodo?.id, "title": title, "memo": memo, "dueDate": self.selectedDate, "tag": self.selectedTag, "priority": self.selectedPriority, "isCompleted": self.modifyTodo?.isCompleted, "isFlagged": self.modifyTodo?.isFlagged], update: .modified)
+                    } else {
+                        realm.add(data)
+                    }
                     print("Realm Create Called")
                 }
             }
@@ -127,6 +144,14 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
         addTodoTableView.tableHeaderView = todoHeaderView
         
         todoHeaderView.memoTextView.delegate = self
+        
+        if let titleString {
+            todoHeaderView.titleTextField.text = titleString
+        }
+        
+        if let memoString {
+            todoHeaderView.memoTextView.text = memoString
+        }
     }
 
 }
@@ -158,7 +183,11 @@ extension AddTodoViewController: UITableViewDelegate, UITableViewDataSource {
         case .tag:
             cell.subtitleLabel.text = selectedTag
         case .priority:
-            cell.subtitleLabel.text = selectedPriority?.rawValue
+            if let priorityValue = selectedPriority {
+                cell.subtitleLabel.text = Priority(rawValue: priorityValue)?.string
+            } else {
+                cell.subtitleLabel.text = nil
+            }
         }
         
         return cell

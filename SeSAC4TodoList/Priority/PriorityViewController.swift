@@ -11,7 +11,7 @@ import SnapKit
 class PriorityViewController: BaseViewController {
 
     let priorityList = Priority.allCases
-    lazy var segmentedControl = UISegmentedControl(items: priorityList.map { $0.rawValue })
+    lazy var segmentedControl = UISegmentedControl(items: priorityList.map { $0.string })
     
     var delegate: PassDataDelegate?
     var selectedPriority: Priority?
@@ -25,7 +25,7 @@ class PriorityViewController: BaseViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         if let selectedPriority {
-            delegate?.priorityReceived(priority: selectedPriority)
+            delegate?.priorityReceived(priority: selectedPriority.rawValue)
         }
     }
     

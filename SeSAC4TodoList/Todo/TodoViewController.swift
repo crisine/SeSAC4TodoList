@@ -177,7 +177,22 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
         
         let modify = UIContextualAction(style: .normal, title: "수정") { (UIContextualAction, UIView, success: @escaping (Bool) -> Void) in
             
+            let index = indexPath.row
+            let todo = self.filteredTodoList[index]
+            let vc = AddTodoViewController()
+            let nav = UINavigationController(rootViewController: vc)
             
+            vc.titleString = todo.title
+            vc.memoString = todo.memo
+            
+            vc.selectedDate = todo.dueDate
+            vc.selectedTag = todo.tag
+            vc.selectedPriority = todo.priority
+            vc.modifyMode = true
+            
+            vc.modifyTodo = todo
+            
+            self.present(nav, animated: true)
             
             success(true)
         }

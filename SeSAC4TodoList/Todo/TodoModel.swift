@@ -8,20 +8,18 @@
 import UIKit
 import RealmSwift
 
-enum Priority: String, CaseIterable {
+enum Priority: Int, CaseIterable {
     
-    case low = "낮음"
-    case middle = "중간"
-    case high = "높음"
+    case low, middle, high
     
-    var intValue: Int {
+    var string: String {
         switch self {
         case .low:
-            return 0
+            return "낮음"
         case .middle:
-            return 1
+            return "중간"
         case .high:
-            return 2
+            return "높음"
         }
     }
 }
