@@ -48,9 +48,10 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
         }
         
         countLabel.snp.makeConstraints { make in
-            make.top.equalTo(iconImageView)
+            make.top.equalTo(contentView.safeAreaLayoutGuide).offset(4)
             make.trailing.equalTo(contentView.safeAreaLayoutGuide)
-            make.size.equalTo(40)
+            make.leading.equalTo(iconImageView.snp.trailing).offset(8)
+            make.trailing.equalTo(contentView.safeAreaLayoutGuide).inset(8)
         }
     }
     
@@ -69,8 +70,9 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
         categoryLabel.font = .boldSystemFont(ofSize: 16)
         categoryLabel.textColor = .gray
         
-        countLabel.font = .boldSystemFont(ofSize: 40)
+        countLabel.font = .boldSystemFont(ofSize: 36)
         countLabel.textColor = .white
+        countLabel.textAlignment = .right
     }
 
     

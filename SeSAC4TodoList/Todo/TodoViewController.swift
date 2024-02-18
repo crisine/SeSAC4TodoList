@@ -27,9 +27,8 @@ class TodoViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        print("\(viewType) 로드되었니?")
 
+        todoTableView.tableHeaderView = UIView()
         todoTableView.delegate = self
         todoTableView.dataSource = self
         todoTableView.register(TodoTableViewCell.self, forCellReuseIdentifier: "TodoTableViewCell")
@@ -148,11 +147,22 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TodoTableViewCell", for: indexPath) as! TodoTableViewCell
         let index = indexPath.row
+        let todo = filteredTodoList[index]
         
-        let dateformatter = DateFormatter()
-        dateformatter.dateFormat = "yyyy. MM. dd."
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy. MM. dd."
         
-        cell.titleLabel.text = filteredTodoList[index].title
+        cell.titleLabel.text = todo.title
+        cell.memoTextLabel.text = todo.memo
+        
+        if let dueDate = todo.dueDate {
+            cell.dateLabel.text = dateFormatter.string(from: dueDate)
+        }
+        
+        if let tag = todo.tag {
+            cell.tagLabel.text = "#\(tag)"
+        }
+        
         cell.circleButton.tag = index
         cell.circleButton.addTarget(self, action: #selector(didTodoCellCircleButtonTapped), for: .touchUpInside)
         
@@ -168,13 +178,88 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
         switch todo.isCompleted {
         case true:
             cell.circleButton.setImage(UIImage(systemName: "circle.inset.filled"), for: .normal)
+            cell.circleButton.tintColor = .systemBlue
         case false:
             cell.circleButton.setImage(UIImage(systemName: "circle"), for: .normal)
+            cell.circleButton.tintColor = .systemGray
+        }
+        
+        if todo.memo != nil && todo.dueDate != nil && todo.tag != nil
+            && todo.title != "" && todo.isFlagged != nil {
+            return
         }
         
         if todo.memo != nil || todo.dueDate != nil || todo.tag != nil {
             print("todo has memo or date or tag.")
-            print(todo)
+            
+            // memo 먼저 판단 (dueDate, tag는 같은 라인에 배치되어야 함)
+            if todo.memo != nil && todo.dueDate == nil && todo.tag == nil {
+                cell.dateLabel.snp.removeConstraints()
+                cell.tagLabel.snp.removeConstraints()
+                
+                cell.memoTextLabel.snp.remakeConstraints { make in
+                    make.top.equalTo(cell.titleLabel.snp.bottom).offset(4)
+                    make.leading.equalTo(cell.contentView.safeAreaLayoutGuide).offset(32)
+                    make.trailing.equalTo(cell.contentView.safeAreaLayoutGuide).inset(8)
+                    make.bottom.equalTo(cell.contentView.safeAreaLayoutGuide).inset(4)
+                }
+                
+                // 메모내용 O, 날짜 X, 태그 O
+            } else if todo.memo != nil && todo.dueDate == nil && todo.tag != nil {
+                cell.dateLabel.snp.removeConstraints()
+                cell.tagLabel.snp.remakeConstraints { make in
+                    make.top.equalTo(cell.memoTextLabel.snp.bottom).offset(4)
+                    make.leading.equalTo(cell.contentView.safeAreaLayoutGuide).offset(32)
+                    make.trailing.equalTo(cell.contentView.safeAreaLayoutGuide).inset(8)
+                    make.bottom.equalTo(cell.contentView.safeAreaLayoutGuide).inset(4)
+                }
+                // 메모내용 O, 날짜 O, 태그 X
+            } else if todo.memo != nil && todo.dueDate != nil && todo.tag == nil {
+                
+                // 메모내용 X, 날짜 X, 태그 O
+            } else if todo.memo == nil && todo.dueDate == nil && todo.tag != nil {
+                cell.memoTextLabel.snp.removeConstraints()
+                cell.dateLabel.snp.removeConstraints()
+                cell.tagLabel.snp.remakeConstraints { make in
+                    make.top.equalTo(cell.titleLabel.snp.bottom).offset(4)
+                    make.leading.equalTo(cell.contentView.safeAreaLayoutGuide).offset(32)
+                    make.trailing.equalTo(cell.contentView.safeAreaLayoutGuide).inset(8)
+                    make.bottom.equalTo(cell.contentView.safeAreaLayoutGuide).inset(4)
+                }
+                // 메모내용 X, 날짜 O, 태그 X
+            } else if todo.memo == nil && todo.dueDate != nil && todo.tag == nil {
+                
+                // 메모내용 X, 날짜 O, 태그 O
+            } else if todo.memo == nil && todo.dueDate != nil && todo.tag != nil {
+                
+            }
+            
+            if let priority = todo.priority {
+                switch priority {
+                case 0:
+                    cell.priorityImageView.image = UIImage(systemName: "exclamationmark")
+                case 1:
+                    cell.priorityImageView.image = UIImage(systemName: "exclamationmark.2")
+                case 2:
+                    cell.priorityImageView.image = UIImage(systemName: "exclamationmark.3")
+                default:
+                    print("정의되지 않은 우선순위라 추후 유지보수 필요")
+                }
+            } else {
+                cell.priorityImageView.snp.removeConstraints()
+                cell.titleLabel.snp.remakeConstraints { make in
+                    make.top.equalTo(cell.contentView.safeAreaLayoutGuide).offset(4)
+                    make.leading.equalTo(cell.contentView.safeAreaLayoutGuide).offset(32)
+                    
+                    if let flagStatus = todo.isFlagged {
+                        make.trailing.equalTo(cell.flagImageView.snp.leading).offset(4)
+                    } else {
+                        cell.flagImageView.snp.removeConstraints()
+                        make.trailing.equalTo(cell.contentView.safeAreaLayoutGuide).inset(8)
+                    }
+                }
+            }
+            
         } else if let priority = todo.priority {
             cell.dateLabel.snp.removeConstraints()
             

@@ -15,8 +15,9 @@ class TodoTableViewCell: UITableViewCell {
     let titleLabel = UILabel()
     let flagImageView = UIImageView()
     
+    let memoTextLabel = UILabel()
     let dateLabel = UILabel()
-    
+    let tagLabel = UILabel()
     
     // TODO: 나중에 디테일을 올리려고 한다면 존재하는 UI 요소 개수에 따라 make를 다시 해주는 것을 고려해 볼 것.
 
@@ -29,7 +30,7 @@ class TodoTableViewCell: UITableViewCell {
     }
     
     private func configureHierarchy() {
-        [circleButton ,priorityImageView, titleLabel, flagImageView, dateLabel].forEach {
+        [circleButton ,priorityImageView, titleLabel, flagImageView, memoTextLabel, dateLabel, tagLabel].forEach {
             contentView.addSubview($0)
         }
     }
@@ -68,12 +69,24 @@ class TodoTableViewCell: UITableViewCell {
             make.size.equalTo(18)
         }
         
-        dateLabel.snp.makeConstraints { make in
+        memoTextLabel.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(4)
-            make.leading.equalTo(titleLabel.snp.leading)
-            make.trailing.equalTo(titleLabel.snp.trailing)
+            make.leading.equalTo(contentView.safeAreaLayoutGuide).offset(32)
+            make.trailing.equalTo(contentView.safeAreaLayoutGuide).inset(8)
+        }
+        
+        dateLabel.snp.makeConstraints { make in
+            make.top.equalTo(memoTextLabel.snp.bottom).offset(4)
+            make.leading.equalTo(contentView.safeAreaLayoutGuide).offset(32)
             make.bottom.equalTo(contentView.safeAreaLayoutGuide).inset(4)
-            make.height.greaterThanOrEqualTo(24)
+            make.width.lessThanOrEqualTo(88)
+        }
+        
+        tagLabel.snp.makeConstraints { make in
+            make.top.equalTo(memoTextLabel.snp.bottom).offset(4)
+            make.leading.equalTo(dateLabel.snp.trailing).offset(4)
+            make.trailing.equalTo(contentView.safeAreaLayoutGuide).inset(8)
+            make.bottom.equalTo(dateLabel.snp.bottom)
         }
     }
     
@@ -88,8 +101,16 @@ class TodoTableViewCell: UITableViewCell {
         
         flagImageView.tintColor = .systemYellow
         
+        memoTextLabel.backgroundColor = .clear
+        memoTextLabel.textAlignment = .left
+        memoTextLabel.textColor = .darkGray
+        memoTextLabel.font = .systemFont(ofSize: 14)
+        
         dateLabel.textColor = .darkGray
         dateLabel.font = .systemFont(ofSize: 14)
+        
+        tagLabel.textColor = .systemBlue
+        tagLabel.font = .boldSystemFont(ofSize: 14)
         
         selectionStyle = .none
     }

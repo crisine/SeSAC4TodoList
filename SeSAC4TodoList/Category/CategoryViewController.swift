@@ -118,7 +118,18 @@ extension CategoryViewController: UICollectionViewDelegate, UICollectionViewData
         
         // TODO: realm에서 가져온 정보에 따라서 개수를 표시해야 함 (Option)
         switch todoTypeList[index] {
-        // case .today:
+         case .today:
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let todayString = dateFormatter.string(from: Date())
+            
+            cell.countLabel.text = String(todoList.filter {
+                if let dueDate = $0.dueDate {
+                    return dateFormatter.string(from: dueDate) == todayString ? true : false
+                } else {
+                    return false
+                }
+            }.count)
         // case .scheduled:
         case .all:
             cell.countLabel.text = String(todoList.count)
@@ -139,7 +150,7 @@ extension CategoryViewController: UICollectionViewDelegate, UICollectionViewData
         
         switch todoTypeList[index] {
         case .today:
-            print("뷰 미구현")
+            vc.viewType = .today
         case .scheduled:
             print("뷰 미구현")
         case .all:

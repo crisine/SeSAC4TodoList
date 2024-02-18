@@ -77,6 +77,12 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
     }
     
     @objc func didDoneBarButtonItemTapped() {
+        
+        guard todoHeaderView.titleTextField.text != "" else {
+            showToast(message: "제목은 필수 입력 사항입니다.")
+            return
+        }
+        
         showAlert(title: "새 할일", message: "저장하시겠습니까?", okTitle: "저장") {
             // TODO: DB를 통해 저장 등...
             
