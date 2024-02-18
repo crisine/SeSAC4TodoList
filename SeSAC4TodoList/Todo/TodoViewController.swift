@@ -16,6 +16,7 @@ class TodoViewController: BaseViewController {
     var allTodoList: [TodoModel] = [] {
         didSet {
             filteredTodoList = allTodoList
+            todoTableView.reloadData()
         }
     }
     var filteredTodoList: [TodoModel] = [] {
@@ -106,6 +107,36 @@ class TodoViewController: BaseViewController {
         todoTableView.separatorColor = .gray
         todoTableView.separatorInset = UIEdgeInsets(top: 0, left: 32, bottom: 0, right: 0)
     }
+    
+    @objc func didTodoCellCircleButtonTapped(sender: UIButton) {
+        let index = sender.tag
+        
+        print("cell : \(index) tapped")
+        
+        let cell = todoTableView.cellForRow(at: IndexPath(row: index, section: 0)) as? TodoTableViewCell
+        
+        let todo = filteredTodoList[index]
+        
+        print("isCompleted : \(todo.isCompleted)")
+        
+        if todo.isCompleted == false {
+            cell?.circleButton.setImage(UIImage(systemName: "circle.inset.filled"), for: .normal)
+            cell?.circleButton.tintColor = .systemBlue
+            
+            let realm = try! Realm()
+            try! realm.write {
+                todo.isCompleted = true
+            }
+        } else if todo.isCompleted == true {
+            cell?.circleButton.setImage(UIImage(systemName: "circle"), for: .normal)
+            cell?.circleButton.tintColor = .gray
+            
+            let realm = try! Realm()
+            try! realm.write {
+                todo.isCompleted = false
+            }
+        }
+    }
 }
 
 extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
@@ -122,6 +153,8 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
         dateformatter.dateFormat = "yyyy. MM. dd."
         
         cell.titleLabel.text = filteredTodoList[index].title
+        cell.circleButton.tag = index
+        cell.circleButton.addTarget(self, action: #selector(didTodoCellCircleButtonTapped), for: .touchUpInside)
         
         configureTodoTableViewCell(cell, index)
         
@@ -131,6 +164,13 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
     private func configureTodoTableViewCell(_ cell: TodoTableViewCell, _ index: Int) {
         
         let todo = filteredTodoList[index]
+        
+        switch todo.isCompleted {
+        case true:
+            cell.circleButton.setImage(UIImage(systemName: "circle.inset.filled"), for: .normal)
+        case false:
+            cell.circleButton.setImage(UIImage(systemName: "circle"), for: .normal)
+        }
         
         if todo.memo != nil || todo.dueDate != nil || todo.tag != nil {
             print("todo has memo or date or tag.")

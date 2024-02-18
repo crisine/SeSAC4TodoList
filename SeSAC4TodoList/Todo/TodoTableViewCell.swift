@@ -10,6 +10,7 @@ import SnapKit
 
 class TodoTableViewCell: UITableViewCell {
     
+    let circleButton = UIButton()
     let priorityImageView = UIImageView()
     let titleLabel = UILabel()
     let flagImageView = UIImageView()
@@ -28,7 +29,7 @@ class TodoTableViewCell: UITableViewCell {
     }
     
     private func configureHierarchy() {
-        [priorityImageView, titleLabel, flagImageView, dateLabel].forEach {
+        [circleButton ,priorityImageView, titleLabel, flagImageView, dateLabel].forEach {
             contentView.addSubview($0)
         }
     }
@@ -42,6 +43,12 @@ class TodoTableViewCell: UITableViewCell {
          타이틀은 무조건 있지만 깃발유무에 따라 trailing 부분을 if로 조절
         if 깃발 = 깃발 표시
          */
+        
+        circleButton.snp.makeConstraints { make in
+            make.centerY.equalTo(contentView)
+            make.leading.equalTo(contentView.safeAreaLayoutGuide)
+            make.size.equalTo(24)
+        }
         
         priorityImageView.snp.makeConstraints { make in
             make.top.equalTo(contentView.safeAreaLayoutGuide).offset(4)
