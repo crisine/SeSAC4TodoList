@@ -11,6 +11,8 @@ import RealmSwift
 class TodoViewController: BaseViewController {
 
     let todoTableView = UITableView()
+    var viewType: TodoType?
+    
     var allTodoList: [TodoModel] = [] {
         didSet {
             filteredTodoList = allTodoList
@@ -24,6 +26,8 @@ class TodoViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        print("\(viewType) 로드되었니?")
 
         todoTableView.delegate = self
         todoTableView.dataSource = self
@@ -52,10 +56,8 @@ class TodoViewController: BaseViewController {
             }
         }
         
+        // TODO: 메뉴가 꾹 눌러야 나와서 자칫 동작을 안 하는 메뉴라고 착각할 여지 있음
         rightBarButtonItem.menu = UIMenu(title: "정렬 순서",
-                                         image: nil,
-                                         identifier: nil,
-                                         options: .displayInline,
                                          children: [orderByDueDate, orderByTitle, displayLowPriorityOnly])
         
         navigationItem.rightBarButtonItem = rightBarButtonItem
@@ -66,8 +68,25 @@ class TodoViewController: BaseViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        guard let viewType else {
+            showAlert(title: "데이터 없음", message: "할 일 데이터가 없습니다.", okTitle: "확인", handler: {})
+            return
+        }
+        
         let realm = try! Realm()
-        allTodoList = realm.objects(TodoModel.self).map { $0 }
+        
+        switch viewType {
+        case .today:
+            allTodoList = realm.objects(TodoModel.self).filter { $0.dueDate?.compare(Date()) == .orderedSame }
+        case .scheduled: 
+            allTodoList = realm.objects(TodoModel.self).filter { $0.dueDate?.compare(Date()) == .orderedDescending }
+        case .all:
+            allTodoList = realm.objects(TodoModel.self).map { $0 }
+        case .flagged:
+            allTodoList = realm.objects(TodoModel.self).filter { $0.isFlagged == true}
+        case .completed:
+            allTodoList = realm.objects(TodoModel.self).filter { $0.isCompleted == true }
+        }
     }
 
     override func configureHierarchy() {
@@ -82,7 +101,10 @@ class TodoViewController: BaseViewController {
     
     override func configureView() {
         view.backgroundColor = .black
+        
         todoTableView.backgroundColor = .black
+        todoTableView.separatorColor = .gray
+        todoTableView.separatorInset = UIEdgeInsets(top: 0, left: 32, bottom: 0, right: 0)
     }
 }
 
@@ -101,12 +123,89 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
         
         cell.titleLabel.text = filteredTodoList[index].title
         
-        if let dueDate = filteredTodoList[index].dueDate {
-            // TODO: dueDate가 금일이라면 '오늘' 로 표시 후, 시간을 표시
-            cell.dateLabel.text = dateformatter.string(from: dueDate)
-        }
+        configureTodoTableViewCell(cell, index)
         
         return cell
     }
     
+    private func configureTodoTableViewCell(_ cell: TodoTableViewCell, _ index: Int) {
+        
+        let todo = filteredTodoList[index]
+        
+        if todo.memo != nil || todo.dueDate != nil || todo.tag != nil {
+            print("todo has memo or date or tag.")
+            print(todo)
+        } else if let priority = todo.priority {
+            cell.dateLabel.snp.removeConstraints()
+            
+            // priority + title
+            switch priority {
+            case 0:
+                cell.priorityImageView.image = UIImage(systemName: "exclamationmark")
+            case 1:
+                cell.priorityImageView.image = UIImage(systemName: "exclamationmark.2")
+            case 2:
+                cell.priorityImageView.image = UIImage(systemName: "exclamationmark.3")
+            default:
+                print("정의되지 않은 우선순위라 추후 유지보수 필요")
+            }
+            
+            cell.priorityImageView.snp.remakeConstraints { make in
+                make.centerY.equalTo(cell.contentView)
+                make.leading.equalTo(cell.contentView.safeAreaLayoutGuide).offset(32)
+                make.size.equalTo(16)
+            }
+            
+            if todo.isFlagged == true {
+                cell.flagImageView.image = UIImage(systemName: "flag.fill")
+                
+                cell.titleLabel.snp.makeConstraints { make in
+                    make.centerY.equalTo(cell.priorityImageView)
+                    make.leading.equalTo(cell.priorityImageView.snp.trailing).offset(4)
+                    make.trailing.equalTo(cell.flagImageView.snp.leading).inset(4)
+                }
+                
+                cell.flagImageView.snp.makeConstraints { make in
+                    make.centerY.equalTo(cell.priorityImageView)
+                    make.trailing.equalTo(cell.contentView.safeAreaLayoutGuide).inset(8)
+                    make.size.equalTo(16)
+                }
+                
+            } else {
+                cell.flagImageView.snp.removeConstraints()
+                cell.dateLabel.snp.removeConstraints()
+                
+                cell.titleLabel.snp.remakeConstraints { make in
+                    make.centerY.equalTo(cell.priorityImageView)
+                    make.leading.equalTo(cell.priorityImageView.snp.trailing).offset(4)
+                    make.trailing.equalTo(cell.contentView.safeAreaLayoutGuide).inset(8)
+                }
+            }
+            
+        } else if todo.isFlagged == true {
+            // title + flagged
+            cell.priorityImageView.snp.removeConstraints()
+            
+            cell.titleLabel.snp.remakeConstraints { make in
+                make.centerY.equalTo(cell.contentView)
+                make.leading.equalTo(cell.contentView.safeAreaLayoutGuide).offset(32)
+                make.trailing.equalTo(cell.flagImageView.snp.leading).inset(4)
+            }
+            
+            cell.flagImageView.snp.remakeConstraints { make in
+                make.centerY.equalTo(cell.titleLabel)
+                make.size.equalTo(16)
+            }
+        } else {
+            cell.priorityImageView.snp.removeConstraints()
+            cell.flagImageView.snp.removeConstraints()
+            cell.dateLabel.snp.removeConstraints()
+            
+            cell.titleLabel.snp.remakeConstraints { make in
+                make.centerY.equalTo(cell.contentView)
+                make.leading.equalTo(cell.contentView.safeAreaLayoutGuide).offset(32)
+                make.trailing.equalTo(cell.contentView.safeAreaLayoutGuide).inset(8)
+            }
+        }
+    }
 }

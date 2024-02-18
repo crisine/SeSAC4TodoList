@@ -22,6 +22,7 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
 
     let addTodoTableView = UITableView()
     let todoCategoryList = AddTodoCategory.allCases
+    lazy var todoHeaderView = AddTodoTableHeaderView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 160))
     
     func priorityReceived(priority: Priority) {
         selectedPriority = priority
@@ -84,8 +85,11 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
             
             if let headerView = self.addTodoTableView.tableHeaderView as? AddTodoTableHeaderView {
                 
+                headerView.memoTextView.delegate = self
+                
                 guard let title = headerView.titleTextField.text else { return }
-                let memo = headerView.memoTextView.text
+                
+                let memo = headerView.memoTextView.text == "메모" ? nil : headerView.memoTextView.text
                 
                 // TODO: 선택된 중요도 넣기
                 let data = TodoModel(title: title, memo: memo, dueDate: self.selectedDate, tag: self.selectedTag, priority: self.selectedPriority?.intValue)
@@ -114,7 +118,9 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
         addTodoTableView.backgroundColor = SeSACColor.veryDarkGray.color
         addTodoTableView.isScrollEnabled = false
         addTodoTableView.separatorStyle = .none
-        addTodoTableView.tableHeaderView = AddTodoTableHeaderView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 160))
+        addTodoTableView.tableHeaderView = todoHeaderView
+        
+        todoHeaderView.memoTextView.delegate = self
     }
 
 }
@@ -176,6 +182,24 @@ extension AddTodoViewController: UITableViewDelegate, UITableViewDataSource {
             let vc = PriorityViewController()
             vc.delegate = self
             navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+    
+}
+
+extension AddTodoViewController: UITextViewDelegate {
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == "메모" {
+            textView.text = ""
+            textView.textColor = .white
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text == "" {
+            textView.text = "메모"
+            textView.textColor = .gray
         }
     }
     

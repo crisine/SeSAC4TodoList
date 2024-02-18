@@ -123,7 +123,8 @@ extension CategoryViewController: UICollectionViewDelegate, UICollectionViewData
         case .all:
             cell.countLabel.text = String(todoList.count)
         // case .flagged:
-        // case .completed:
+         case .completed:
+            cell.countLabel.text = String(todoList.filter { $0.isCompleted == true }.count )
         default:
             cell.countLabel.text = "0"
         }
@@ -134,11 +135,22 @@ extension CategoryViewController: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let index = indexPath.row
         
-        if todoTypeList[index] == .all {
-            print("전체 화면 보여주기 네비게이션으로 이동")
-            
-            navigationController?.pushViewController(TodoViewController(), animated: true)
+        let vc = TodoViewController()
+        
+        switch todoTypeList[index] {
+        case .today:
+            print("뷰 미구현")
+        case .scheduled:
+            print("뷰 미구현")
+        case .all:
+            vc.viewType = .all
+        case .flagged:
+            print("뷰 미구현")
+        case .completed:
+            vc.viewType = .completed
         }
+        
+        navigationController?.pushViewController(vc, animated: true)
     }
     
 }

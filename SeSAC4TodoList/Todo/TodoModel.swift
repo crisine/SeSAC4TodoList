@@ -26,7 +26,7 @@ enum Priority: String, CaseIterable {
     }
 }
 
-enum TodoType: String, CaseIterable{
+enum TodoType: String, CaseIterable {
     
     case today = "오늘"
     case scheduled = "예정"
@@ -72,13 +72,17 @@ class TodoModel: Object {
     @Persisted var dueDate: Date?
     @Persisted var tag: String?
     @Persisted var priority: Int?
+    @Persisted var isCompleted: Bool
+    @Persisted var isFlagged: Bool?
 
-    convenience init(title: String, memo: String? = nil, dueDate: Date? = nil, tag: String? = nil, priority: Int? = nil) {
+    convenience init(title: String, memo: String? = nil, dueDate: Date? = nil, tag: String? = nil, priority: Int? = nil, isCompleted: Bool = false, isFlagged: Bool? = nil) {
         self.init()
         self.title = title
         self.memo = memo
         self.dueDate = dueDate
         self.tag = tag
         self.priority = priority
+        self.isCompleted = isCompleted
+        self.isFlagged = isFlagged
     }
 }
