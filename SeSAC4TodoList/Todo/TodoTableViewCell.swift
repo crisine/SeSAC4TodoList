@@ -29,6 +29,10 @@ class TodoTableViewCell: UITableViewCell {
         configureView()
     }
     
+    override func prepareForReuse() {
+        // 모든 요소 nil 처리 및 constraint 삭제 후 다시 configure 3개 호출
+    }
+    
     private func configureHierarchy() {
         [circleButton ,priorityImageView, titleLabel, flagImageView, memoTextLabel, dateLabel, tagLabel].forEach {
             contentView.addSubview($0)
@@ -105,6 +109,7 @@ class TodoTableViewCell: UITableViewCell {
         memoTextLabel.textAlignment = .left
         memoTextLabel.textColor = .darkGray
         memoTextLabel.font = .systemFont(ofSize: 14)
+        memoTextLabel.numberOfLines = 0
         
         dateLabel.textColor = .darkGray
         dateLabel.font = .systemFont(ofSize: 14)

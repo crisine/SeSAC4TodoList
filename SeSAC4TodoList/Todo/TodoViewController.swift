@@ -19,11 +19,7 @@ class TodoViewController: BaseViewController {
             todoTableView.reloadData()
         }
     }
-    var filteredTodoList: [TodoModel] = [] {
-        didSet {
-            todoTableView.reloadData()
-        }
-    }
+    var filteredTodoList: [TodoModel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +37,8 @@ class TodoViewController: BaseViewController {
             self.filteredTodoList = self.allTodoList.sorted {
                 $0.dueDate ?? Date(timeIntervalSinceReferenceDate: TimeInterval.greatestFiniteMagnitude) < $1.dueDate ?? Date(timeIntervalSinceReferenceDate: TimeInterval.greatestFiniteMagnitude)
             }
+            
+            self.todoTableView.reloadData()
         }
         
         let orderByTitle = UIAction(title: "제목 순으로 보기", image: UIImage(systemName: "text.line.first.and.arrowtriangle.forward")) { _ in
@@ -48,12 +46,16 @@ class TodoViewController: BaseViewController {
             self.filteredTodoList = self.allTodoList.sorted {
                 $0.title < $1.title
             }
+            
+            self.todoTableView.reloadData()
         }
         let displayLowPriorityOnly = UIAction(title: "우선순위 낮음만 보기", image: UIImage(systemName: "exclamationmark")) { _ in
             
             self.filteredTodoList = self.allTodoList.filter {
                 $0.priority == 0
             }
+            
+            self.todoTableView.reloadData()
         }
         
         // TODO: 메뉴가 꾹 눌러야 나와서 자칫 동작을 안 하는 메뉴라고 착각할 여지 있음
@@ -171,6 +173,40 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let modify = UIContextualAction(style: .normal, title: "수정") { (UIContextualAction, UIView, success: @escaping (Bool) -> Void) in
+            
+            
+            
+            success(true)
+        }
+        modify.backgroundColor = .systemYellow
+        
+        let delete = UIContextualAction(style: .destructive, title: "삭제") { (UIContextualAction, UIView, success: @escaping (Bool) -> Void) in
+            
+            let index = indexPath.row
+            let realm = try! Realm()
+            
+            do {
+                try realm.write {
+                    print("realm 삭제 및 로컬 메모리에서 해당 데이터 삭제 시도")
+                    realm.delete(self.filteredTodoList.remove(at: index))
+                }
+            } catch {
+                dump(error)
+                self.showAlert(title: "에러", message: "할 일을 삭제하지 못했습니다.", okTitle: "확인", handler: { })
+            }
+            
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            tableView.reloadData()
+            success(true)
+        }
+        delete.backgroundColor = .systemRed
+        
+        return UISwipeActionsConfiguration(actions: [delete, modify])
+    }
+    
     private func configureTodoTableViewCell(_ cell: TodoTableViewCell, _ index: Int) {
         
         let todo = filteredTodoList[index]
@@ -203,7 +239,6 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
                     make.trailing.equalTo(cell.contentView.safeAreaLayoutGuide).inset(8)
                     make.bottom.equalTo(cell.contentView.safeAreaLayoutGuide).inset(4)
                 }
-                
                 // 메모내용 O, 날짜 X, 태그 O
             } else if todo.memo != nil && todo.dueDate == nil && todo.tag != nil {
                 cell.dateLabel.snp.removeConstraints()
@@ -215,7 +250,7 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
                 }
                 // 메모내용 O, 날짜 O, 태그 X
             } else if todo.memo != nil && todo.dueDate != nil && todo.tag == nil {
-                
+                cell.tagLabel.snp.removeConstraints()
                 // 메모내용 X, 날짜 X, 태그 O
             } else if todo.memo == nil && todo.dueDate == nil && todo.tag != nil {
                 cell.memoTextLabel.snp.removeConstraints()
@@ -228,10 +263,29 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
                 }
                 // 메모내용 X, 날짜 O, 태그 X
             } else if todo.memo == nil && todo.dueDate != nil && todo.tag == nil {
-                
+                cell.memoTextLabel.snp.removeConstraints()
+                cell.tagLabel.snp.removeConstraints()
+                cell.dateLabel.snp.remakeConstraints { make in
+                    make.top.equalTo(cell.titleLabel.snp.bottom).offset(4)
+                    make.leading.equalTo(cell.contentView.safeAreaLayoutGuide).offset(32)
+                    make.trailing.equalTo(cell.contentView.safeAreaLayoutGuide).inset(8)
+                    make.bottom.equalTo(cell.contentView.safeAreaLayoutGuide).inset(4)
+                }
                 // 메모내용 X, 날짜 O, 태그 O
             } else if todo.memo == nil && todo.dueDate != nil && todo.tag != nil {
-                
+                cell.memoTextLabel.snp.removeConstraints()
+                cell.dateLabel.snp.remakeConstraints { make in
+                    make.top.equalTo(cell.titleLabel.snp.bottom).offset(4)
+                    make.leading.equalTo(cell.contentView.safeAreaLayoutGuide).offset(32)
+                    make.width.lessThanOrEqualTo(88)
+                    make.bottom.equalTo(cell.contentView.safeAreaLayoutGuide).inset(4)
+                }
+                cell.tagLabel.snp.remakeConstraints { make in
+                    make.top.equalTo(cell.titleLabel.snp.bottom).offset(4)
+                    make.leading.equalTo(cell.dateLabel.snp.trailing).offset(4)
+                    make.trailing.equalTo(cell.contentView.safeAreaLayoutGuide).inset(8)
+                    make.bottom.equalTo(cell.contentView.safeAreaLayoutGuide).inset(4)
+                }
             }
             
             if let priority = todo.priority {
