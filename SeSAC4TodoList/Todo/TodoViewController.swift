@@ -208,6 +208,7 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     private func configureTodoTableViewCell(_ cell: TodoTableViewCell, _ index: Int) {
+        print("configuring Tableview Cell Style")
         
         let todo = filteredTodoList[index]
         
@@ -226,7 +227,6 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         if todo.memo != nil || todo.dueDate != nil || todo.tag != nil {
-            print("todo has memo or date or tag.")
             
             // memo 먼저 판단 (dueDate, tag는 같은 라인에 배치되어야 함)
             if todo.memo != nil && todo.dueDate == nil && todo.tag == nil {

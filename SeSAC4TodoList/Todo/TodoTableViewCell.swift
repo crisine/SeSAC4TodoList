@@ -29,14 +29,27 @@ class TodoTableViewCell: UITableViewCell {
         configureView()
     }
     
-    override func prepareForReuse() {
-        // 모든 요소 nil 처리 및 constraint 삭제 후 다시 configure 3개 호출
-    }
-    
     private func configureHierarchy() {
-        [circleButton ,priorityImageView, titleLabel, flagImageView, memoTextLabel, dateLabel, tagLabel].forEach {
+        [circleButton, priorityImageView, titleLabel, flagImageView, memoTextLabel, dateLabel, tagLabel].forEach {
             contentView.addSubview($0)
         }
+    }
+    
+    override func prepareForReuse() {
+        [circleButton, priorityImageView, titleLabel, flagImageView, memoTextLabel, dateLabel, tagLabel].forEach {
+            $0.snp.removeConstraints()
+        }
+        
+        circleButton.imageView?.image = nil
+        priorityImageView.image = nil
+        flagImageView.image = nil
+        
+        titleLabel.text = nil
+        memoTextLabel.text = nil
+        dateLabel.text = nil
+        tagLabel.text = nil
+        
+        configureConstraints()
     }
     
     private func configureConstraints() {
