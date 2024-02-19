@@ -13,13 +13,8 @@ class TodoViewController: BaseViewController {
     let todoTableView = UITableView()
     var viewType: TodoType?
     
-    var allTodoList: [TodoModel] = [] {
-        didSet {
-            filteredTodoList = allTodoList
-            todoTableView.reloadData()
-        }
-    }
-    var filteredTodoList: [TodoModel] = []
+    var allTodoList: Results<TodoModel>!
+    var filteredTodoList: Results<TodoModel>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,29 +28,24 @@ class TodoViewController: BaseViewController {
         
         let orderByDueDate = UIAction(title: "마감일 순으로 보기", image: UIImage(systemName: "calendar.badge.clock")) { _ in
             
-            // TODO: Filter 방식이 이상한지 날짜가 없던 항목에도 날짜가 붙는 문제 발생
-            self.filteredTodoList = self.allTodoList.sorted {
-                $0.dueDate ?? Date(timeIntervalSinceReferenceDate: TimeInterval.greatestFiniteMagnitude) < $1.dueDate ?? Date(timeIntervalSinceReferenceDate: TimeInterval.greatestFiniteMagnitude)
-            }
+            self.filteredTodoList = self.allTodoList.sorted(byKeyPath: "dueDate", ascending: true)
             
-            self.todoTableView.reloadData()
+            // MARK: Results<> 로 변경하면서 Reload는 자동으로 호출
+//            self.todoTableView.reloadData()
         }
         
         let orderByTitle = UIAction(title: "제목 순으로 보기", image: UIImage(systemName: "text.line.first.and.arrowtriangle.forward")) { _ in
             
-            self.filteredTodoList = self.allTodoList.sorted {
-                $0.title < $1.title
-            }
+            self.filteredTodoList = self.allTodoList.sorted(byKeyPath: "title", ascending: true)
             
-            self.todoTableView.reloadData()
+//            self.todoTableView.reloadData()
         }
         let displayLowPriorityOnly = UIAction(title: "우선순위 낮음만 보기", image: UIImage(systemName: "exclamationmark")) { _ in
             
-            self.filteredTodoList = self.allTodoList.filter {
-                $0.priority == 0
-            }
+            let predicate = NSPredicate(format: "priority == %@", 0)
+            self.filteredTodoList = self.allTodoList.filter(predicate)
             
-            self.todoTableView.reloadData()
+//            self.todoTableView.reloadData()
         }
         
         // TODO: 메뉴가 꾹 눌러야 나와서 자칫 동작을 안 하는 메뉴라고 착각할 여지 있음
@@ -77,18 +67,35 @@ class TodoViewController: BaseViewController {
         
         let realm = try! Realm()
         
+        allTodoList = realm.objects(TodoModel.self)
+        
         switch viewType {
         case .today:
-            allTodoList = realm.objects(TodoModel.self).filter { $0.dueDate?.compare(Date()) == .orderedSame }
-        case .scheduled: 
-            allTodoList = realm.objects(TodoModel.self).filter { $0.dueDate?.compare(Date()) == .orderedDescending }
+            let start = Calendar.current.startOfDay(for: Date())
+            let end: Date = Calendar.current.date(byAdding: .day, value: 1, to: start) ?? Date()
+            
+            let predicate = NSPredicate(format: "dueDate >= %@ && dueDate < %@ && isCompleted != TRUE", start as NSDate, end as NSDate)
+            filteredTodoList = allTodoList.filter(predicate)
+            
+        case .scheduled:
+            let scheduledDate = Calendar.current.startOfDay(for: Date())
+            let predicate = NSPredicate(format: "dueDate > %@ && isCompleted != TRUE", scheduledDate as NSDate)
+            
+            filteredTodoList = allTodoList.filter(predicate)
+            
         case .all:
-            allTodoList = realm.objects(TodoModel.self).map { $0 }
+            filteredTodoList = allTodoList
+
         case .flagged:
-            allTodoList = realm.objects(TodoModel.self).filter { $0.isFlagged == true}
+            let predicate = NSPredicate(format: "isFlagged == TRUE && isCompleted != TRUE")
+            filteredTodoList = allTodoList.filter(predicate)
+            
         case .completed:
-            allTodoList = realm.objects(TodoModel.self).filter { $0.isCompleted == true }
+            let predicate = NSPredicate(format: "isCompleted == TRUE")
+            filteredTodoList = allTodoList.filter(predicate)
         }
+        
+        todoTableView.reloadData()
     }
 
     override func configureHierarchy() {
@@ -205,8 +212,7 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
             
             do {
                 try realm.write {
-                    print("realm 삭제 및 로컬 메모리에서 해당 데이터 삭제 시도")
-                    realm.delete(self.filteredTodoList.remove(at: index))
+                    realm.delete(self.filteredTodoList[index])
                 }
             } catch {
                 dump(error)

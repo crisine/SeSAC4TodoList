@@ -16,11 +16,9 @@ final class CategoryViewController: BaseViewController {
 
     private let todoTypeList = TodoType.allCases
     
-    var todoList: [TodoModel] = [] {
-        didSet {
-            todoCollectionView.reloadData()
-        }
-    }
+    var todoList: Results<TodoModel>!
+    
+    private let realm = try! Realm()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,8 +45,7 @@ final class CategoryViewController: BaseViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        let realm = try! Realm()
-        todoList = realm.objects(TodoModel.self).map { $0 }
+        todoList = realm.objects(TodoModel.self)
     }
     
     @objc func didTodoAddButtonTapped() {
@@ -116,28 +113,27 @@ extension CategoryViewController: UICollectionViewDelegate, UICollectionViewData
         cell.iconImageView.backgroundColor = todoTypeList[index].backgroundColor
         cell.categoryLabel.text = todoTypeList[index].rawValue
         
-        // TODO: realm에서 가져온 정보에 따라서 개수를 표시해야 함 (Option)
         switch todoTypeList[index] {
-         case .today:
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            let todayString = dateFormatter.string(from: Date())
+        case .today:
+            let start = Calendar.current.startOfDay(for: Date())
+            let end: Date = Calendar.current.date(byAdding: .day, value: 1, to: start) ?? Date()
+     
+            let predicate = NSPredicate(format: "dueDate >= %@ && dueDate < %@ && isCompleted != TRUE", start as NSDate, end as NSDate)
             
-            cell.countLabel.text = String(todoList.filter {
-                if let dueDate = $0.dueDate {
-                    return dateFormatter.string(from: dueDate) == todayString ? true : false
-                } else {
-                    return false
-                }
-            }.count)
-        // case .scheduled:
+            cell.countLabel.text = String(todoList.filter(predicate).count)
+        case .scheduled:
+            let scheduledDate = Calendar.current.startOfDay(for: Date())
+            let predicate = NSPredicate(format: "dueDate > %@ && isCompleted != TRUE", scheduledDate as NSDate)
+            
+            cell.countLabel.text = String(todoList.filter(predicate).count)
         case .all:
             cell.countLabel.text = String(todoList.count)
-        // case .flagged:
-         case .completed:
-            cell.countLabel.text = String(todoList.filter { $0.isCompleted == true }.count )
-        default:
-            cell.countLabel.text = "0"
+        case .flagged:
+            let predicate = NSPredicate(format: "isFlagged == TRUE")
+            cell.countLabel.text = String(todoList.filter(predicate).count)
+        case .completed:
+            let predicate = NSPredicate(format: "isCompleted == TRUE")
+            cell.countLabel.text = String(todoList.filter(predicate).count)
         }
         
         return cell
@@ -152,11 +148,11 @@ extension CategoryViewController: UICollectionViewDelegate, UICollectionViewData
         case .today:
             vc.viewType = .today
         case .scheduled:
-            print("뷰 미구현")
+            vc.viewType = .scheduled
         case .all:
             vc.viewType = .all
         case .flagged:
-            print("뷰 미구현")
+            vc.viewType = .flagged
         case .completed:
             vc.viewType = .completed
         }
