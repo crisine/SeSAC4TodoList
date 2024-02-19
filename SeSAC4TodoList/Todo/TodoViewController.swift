@@ -14,7 +14,11 @@ class TodoViewController: BaseViewController {
     var viewType: TodoType?
     
     var allTodoList: Results<TodoModel>!
-    var filteredTodoList: Results<TodoModel>!
+    var filteredTodoList: Results<TodoModel>! {
+        didSet {
+            todoTableView.reloadData()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,33 +28,24 @@ class TodoViewController: BaseViewController {
         todoTableView.dataSource = self
         todoTableView.register(TodoTableViewCell.self, forCellReuseIdentifier: "TodoTableViewCell")
         
-        let rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), style: .plain, target: self, action: #selector(didSortOptionButtonTapped))
         
         let orderByDueDate = UIAction(title: "마감일 순으로 보기", image: UIImage(systemName: "calendar.badge.clock")) { _ in
             
-            self.filteredTodoList = self.allTodoList.sorted(byKeyPath: "dueDate", ascending: true)
-            
-            // MARK: Results<> 로 변경하면서 Reload는 자동으로 호출
-//            self.todoTableView.reloadData()
+            self.filteredTodoList = self.filteredTodoList.sorted(byKeyPath: "dueDate", ascending: true)
         }
         
         let orderByTitle = UIAction(title: "제목 순으로 보기", image: UIImage(systemName: "text.line.first.and.arrowtriangle.forward")) { _ in
             
-            self.filteredTodoList = self.allTodoList.sorted(byKeyPath: "title", ascending: true)
-            
-//            self.todoTableView.reloadData()
-        }
-        let displayLowPriorityOnly = UIAction(title: "우선순위 낮음만 보기", image: UIImage(systemName: "exclamationmark")) { _ in
-            
-            let predicate = NSPredicate(format: "priority == %@", 0)
-            self.filteredTodoList = self.allTodoList.filter(predicate)
-            
-//            self.todoTableView.reloadData()
+            self.filteredTodoList = self.filteredTodoList.sorted(byKeyPath: "title", ascending: true)
         }
         
-        // TODO: 메뉴가 꾹 눌러야 나와서 자칫 동작을 안 하는 메뉴라고 착각할 여지 있음
-        rightBarButtonItem.menu = UIMenu(title: "정렬 순서",
-                                         children: [orderByDueDate, orderByTitle, displayLowPriorityOnly])
+        let displayLowPriorityOnly = UIAction(title: "우선순위 낮음만 보기", image: UIImage(systemName: "exclamationmark")) { _ in
+            
+            let predicate = NSPredicate(format: "priority == 0")
+            self.filteredTodoList = self.filteredTodoList.filter(predicate)
+        }
+        
+        let rightBarButtonItem = UIBarButtonItem(title: "정렬 순서", image: UIImage(systemName: "ellipsis.circle"), primaryAction: nil, menu: UIMenu(title: "정렬 순서", children: [orderByDueDate, orderByTitle, displayLowPriorityOnly]))
         
         navigationItem.rightBarButtonItem = rightBarButtonItem
     }
@@ -75,25 +70,27 @@ class TodoViewController: BaseViewController {
             let end: Date = Calendar.current.date(byAdding: .day, value: 1, to: start) ?? Date()
             
             let predicate = NSPredicate(format: "dueDate >= %@ && dueDate < %@ && isCompleted != TRUE", start as NSDate, end as NSDate)
-            filteredTodoList = allTodoList.filter(predicate)
+            allTodoList = allTodoList.filter(predicate)
             
         case .scheduled:
             let scheduledDate = Calendar.current.startOfDay(for: Date())
             let predicate = NSPredicate(format: "dueDate > %@ && isCompleted != TRUE", scheduledDate as NSDate)
             
-            filteredTodoList = allTodoList.filter(predicate)
+            allTodoList = allTodoList.filter(predicate)
             
         case .all:
-            filteredTodoList = allTodoList
+            print("")
 
         case .flagged:
             let predicate = NSPredicate(format: "isFlagged == TRUE && isCompleted != TRUE")
-            filteredTodoList = allTodoList.filter(predicate)
+            allTodoList = allTodoList.filter(predicate)
             
         case .completed:
             let predicate = NSPredicate(format: "isCompleted == TRUE")
-            filteredTodoList = allTodoList.filter(predicate)
+            allTodoList = allTodoList.filter(predicate)
         }
+        
+        filteredTodoList = allTodoList
         
         todoTableView.reloadData()
     }
@@ -175,6 +172,29 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
         cell.circleButton.tag = index
         cell.circleButton.addTarget(self, action: #selector(didTodoCellCircleButtonTapped), for: .touchUpInside)
         
+        if let savedImage = loadImageToDocument(filename: "\(todo.id)") {
+            cell.pickedImageView.image = savedImage
+            
+            cell.pickedImageView.snp.remakeConstraints { make in
+                print("이미지 컨스트레인트 재생성중")
+                if todo.dueDate != nil {
+                    make.top.equalTo(cell.dateLabel.snp.bottom).inset(4)
+                } else if todo.tag != nil {
+                    make.top.equalTo(cell.tagLabel.snp.bottom).inset(4)
+                } else if todo.memo != nil {
+                    make.top.equalTo(cell.memoTextLabel.snp.bottom).inset(4)
+                } else {
+                    make.top.equalTo(cell.titleLabel.snp.bottom).inset(4)
+                }
+                
+                make.leading.equalTo(cell.contentView.safeAreaLayoutGuide).offset(32)
+                make.trailing.equalTo(cell.contentView.safeAreaLayoutGuide).inset(8)
+                make.height.equalTo(80)
+                make.bottom.equalTo(cell.contentView.safeAreaLayoutGuide).inset(4)
+            }
+        }
+        
+        
         configureTodoTableViewCell(cell, index)
         
         return cell
@@ -198,6 +218,7 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
             vc.modifyMode = true
             
             vc.modifyTodo = todo
+            vc.pickedImage = self.loadImageToDocument(filename: "\(todo.id)")
             
             self.present(nav, animated: true)
             
@@ -326,7 +347,7 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
                     make.top.equalTo(cell.contentView.safeAreaLayoutGuide).offset(4)
                     make.leading.equalTo(cell.contentView.safeAreaLayoutGuide).offset(32)
                     
-                    if let flagStatus = todo.isFlagged {
+                    if todo.isFlagged != nil {
                         make.trailing.equalTo(cell.flagImageView.snp.leading).offset(4)
                     } else {
                         cell.flagImageView.snp.removeConstraints()

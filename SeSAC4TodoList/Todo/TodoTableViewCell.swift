@@ -14,6 +14,7 @@ class TodoTableViewCell: UITableViewCell {
     let priorityImageView = UIImageView()
     let titleLabel = UILabel()
     let flagImageView = UIImageView()
+    let pickedImageView = UIImageView()
     
     let memoTextLabel = UILabel()
     let dateLabel = UILabel()
@@ -30,19 +31,20 @@ class TodoTableViewCell: UITableViewCell {
     }
     
     private func configureHierarchy() {
-        [circleButton, priorityImageView, titleLabel, flagImageView, memoTextLabel, dateLabel, tagLabel].forEach {
+        [circleButton, priorityImageView, titleLabel, flagImageView, memoTextLabel, dateLabel, tagLabel, pickedImageView].forEach {
             contentView.addSubview($0)
         }
     }
     
     override func prepareForReuse() {
-        [circleButton, priorityImageView, titleLabel, flagImageView, memoTextLabel, dateLabel, tagLabel].forEach {
+        [circleButton, priorityImageView, titleLabel, flagImageView, memoTextLabel, dateLabel, tagLabel, pickedImageView].forEach {
             $0.snp.removeConstraints()
         }
         
         circleButton.imageView?.image = nil
         priorityImageView.image = nil
         flagImageView.image = nil
+        pickedImageView.image = nil
         
         titleLabel.text = nil
         memoTextLabel.text = nil
@@ -95,7 +97,7 @@ class TodoTableViewCell: UITableViewCell {
         dateLabel.snp.makeConstraints { make in
             make.top.equalTo(memoTextLabel.snp.bottom).offset(4)
             make.leading.equalTo(contentView.safeAreaLayoutGuide).offset(32)
-            make.bottom.equalTo(contentView.safeAreaLayoutGuide).inset(4)
+            make.bottom.equalTo(pickedImageView.snp.top).inset(4)
             make.width.lessThanOrEqualTo(88)
         }
         
@@ -104,6 +106,14 @@ class TodoTableViewCell: UITableViewCell {
             make.leading.equalTo(dateLabel.snp.trailing).offset(4)
             make.trailing.equalTo(contentView.safeAreaLayoutGuide).inset(8)
             make.bottom.equalTo(dateLabel.snp.bottom)
+        }
+        
+        pickedImageView.snp.makeConstraints { make in
+            make.top.equalTo(dateLabel.snp.bottom).offset(4)
+            make.leading.equalTo(contentView.safeAreaLayoutGuide).offset(32)
+            make.trailing.equalTo(contentView.safeAreaLayoutGuide).inset(8)
+            make.height.equalTo(0)
+            make.bottom.equalTo(contentView.safeAreaLayoutGuide).inset(4)
         }
     }
     
@@ -129,6 +139,11 @@ class TodoTableViewCell: UITableViewCell {
         
         tagLabel.textColor = .systemBlue
         tagLabel.font = .boldSystemFont(ofSize: 14)
+        
+        pickedImageView.backgroundColor = .clear
+        pickedImageView.contentMode = .scaleAspectFill
+        pickedImageView.clipsToBounds = true
+        pickedImageView.layer.cornerRadius = 16
         
         selectionStyle = .none
     }

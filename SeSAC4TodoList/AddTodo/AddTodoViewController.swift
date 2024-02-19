@@ -12,6 +12,7 @@ enum AddTodoCategory: String, CaseIterable {
     case duedate = "마감일"
     case tag = "태그"
     case priority = "우선순위"
+    case image = "이미지 추가"
 }
 
 protocol PassDataDelegate {
@@ -32,6 +33,11 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
     var memoString: String?
     var modifyMode: Bool = false
     var modifyTodo: TodoModel?
+    var pickedImage: UIImage? {
+        didSet {
+            addTodoTableView.reloadData()
+        }
+    }
     
     var selectedDate: Date? {
         didSet {
@@ -57,6 +63,8 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
         addTodoTableView.delegate = self
         addTodoTableView.dataSource = self
         addTodoTableView.register(AddTodoTableViewCell.self, forCellReuseIdentifier: "AddTodoTableViewCell")
+        addTodoTableView.register(AddTodoImageTableViewCell.self, forCellReuseIdentifier: "AddTodoImageTableViewCell")
+
         
         NotificationCenter.default.addObserver(self, selector: #selector(recievedNotificationFromTagViewController), name: NSNotification.Name("tagNotification"), object: nil)
     }
@@ -121,6 +129,10 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
                     }
                     print("Realm Create Called")
                 }
+                
+                if let pickedImage = self.pickedImage {
+                    self.saveImageToDocument(image: pickedImage, filename: "\(data.id)")
+                }
             }
             
             self.dismiss(animated: true)
@@ -153,6 +165,13 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
             todoHeaderView.memoTextView.text = memoString
         }
     }
+    
+    private func addImage() {
+        let vc = UIImagePickerController()
+        vc.delegate = self
+        vc.overrideUserInterfaceStyle = .dark
+        present(vc, animated: true)
+    }
 
 }
 
@@ -167,30 +186,69 @@ extension AddTodoViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "AddTodoTableViewCell", for: indexPath) as! AddTodoTableViewCell
-        let index = indexPath.row
         
-        cell.titleLabel.text = todoCategoryList[index].rawValue
+        let index = indexPath.row
         
         switch todoCategoryList[index] {
         case .duedate:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "AddTodoTableViewCell", for: indexPath) as! AddTodoTableViewCell
+            cell.titleLabel.text = todoCategoryList[index].rawValue
+            
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy. MM. dd."
             
             if let selectedDate {
                 cell.subtitleLabel.text = formatter.string(from: selectedDate)
             }
+            
+            return cell
+            
         case .tag:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "AddTodoTableViewCell", for: indexPath) as! AddTodoTableViewCell
+            cell.titleLabel.text = todoCategoryList[index].rawValue
+            
             cell.subtitleLabel.text = selectedTag
+            return cell
+            
         case .priority:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "AddTodoTableViewCell", for: indexPath) as! AddTodoTableViewCell
+            cell.titleLabel.text = todoCategoryList[index].rawValue
+            
             if let priorityValue = selectedPriority {
                 cell.subtitleLabel.text = Priority(rawValue: priorityValue)?.string
             } else {
                 cell.subtitleLabel.text = nil
             }
+            return cell
+            
+        case .image:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "AddTodoImageTableViewCell", for: indexPath) as! AddTodoImageTableViewCell
+            
+            let addImageButtonClosure = { (action: UIAction) in
+                if action.title == "사진 보관함" {
+                    print("사진 보관함 탭 선택됨")
+                    self.addImage()
+                } else if action.title == "사진 찍기" {
+                    
+                } else if action.title == "웹에서 불러오기" {
+                    
+                }
+            }
+            
+            cell.addImageButton.menu = UIMenu(title: "이미지 추가", children: [
+                UIAction(title: "사진 보관함", image: UIImage(systemName: "photo"), handler: addImageButtonClosure),
+                UIAction(title: "사진 찍기", image: UIImage(systemName: "camera"), handler: addImageButtonClosure),
+                UIAction(title: "웹에서 불러오기", image: UIImage(systemName: "safari"), handler: addImageButtonClosure)
+            ])
+            
+            cell.addImageButton.showsMenuAsPrimaryAction = true
+            
+            if let pickedImage {
+                cell.pickedImageView.image = pickedImage
+            }
+            
+            return cell
         }
-        
-        return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -217,6 +275,9 @@ extension AddTodoViewController: UITableViewDelegate, UITableViewDataSource {
             let vc = PriorityViewController()
             vc.delegate = self
             navigationController?.pushViewController(vc, animated: true)
+        case .image:
+            // TODO: 이미지 추가용 팝업 띄우기 -> 버튼에 이벤트 붙여야 함
+            print("")
         }
     }
     
@@ -238,4 +299,20 @@ extension AddTodoViewController: UITextViewDelegate {
         }
     }
     
+}
+
+extension AddTodoViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            self.pickedImage = pickedImage
+        }
+        
+        dismiss(animated: true)
+    }
 }

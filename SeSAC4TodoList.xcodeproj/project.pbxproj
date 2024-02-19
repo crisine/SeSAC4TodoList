@@ -31,6 +31,8 @@
 		FAB4FF692B7CD38200B564DB /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB4FF682B7CD38200B564DB /* CategoryViewController.swift */; };
 		FAB4FF6B2B7CD7C800B564DB /* CategoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB4FF6A2B7CD7C800B564DB /* CategoryCollectionViewCell.swift */; };
 		FAB4FF6D2B7CDCF500B564DB /* TodoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB4FF6C2B7CDCF500B564DB /* TodoModel.swift */; };
+		FAE284022B83D8D700AE7EA2 /* AddTodoImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE284012B83D8D700AE7EA2 /* AddTodoImageTableViewCell.swift */; };
+		FAE284052B83F84200AE7EA2 /* Filemanager+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE284042B83F84200AE7EA2 /* Filemanager+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +57,8 @@
 		FAB4FF682B7CD38200B564DB /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
 		FAB4FF6A2B7CD7C800B564DB /* CategoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCollectionViewCell.swift; sourceTree = "<group>"; };
 		FAB4FF6C2B7CDCF500B564DB /* TodoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoModel.swift; sourceTree = "<group>"; };
+		FAE284012B83D8D700AE7EA2 /* AddTodoImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTodoImageTableViewCell.swift; sourceTree = "<group>"; };
+		FAE284042B83F84200AE7EA2 /* Filemanager+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Filemanager+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +83,7 @@
 				FA68716B2B7D101E0079D8CB /* AddTodoTableHeaderView.swift */,
 				FA6871632B7CFC1B0079D8CB /* AddTodoViewController.swift */,
 				FA6871662B7CFE120079D8CB /* AddTodoTableViewCell.swift */,
+				FAE284012B83D8D700AE7EA2 /* AddTodoImageTableViewCell.swift */,
 			);
 			path = AddTodo;
 			sourceTree = "<group>";
@@ -134,6 +139,7 @@
 		FAB4FF492B7CD19500B564DB /* SeSAC4TodoList */ = {
 			isa = PBXGroup;
 			children = (
+				FAE284032B83F83500AE7EA2 /* Extension */,
 				FA6871682B7D06570079D8CB /* Enum */,
 				FAB4FF5E2B7CD2A400B564DB /* Base */,
 				FAB4FF6E2B7CE21800B564DB /* Todo */,
@@ -178,6 +184,14 @@
 				FA08112B2B7E5DA900243BC8 /* TodoTableViewCell.swift */,
 			);
 			path = Todo;
+			sourceTree = "<group>";
+		};
+		FAE284032B83F83500AE7EA2 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				FAE284042B83F84200AE7EA2 /* Filemanager+Extension.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -267,9 +281,11 @@
 				FAB4FF692B7CD38200B564DB /* CategoryViewController.swift in Sources */,
 				FA68716A2B7D066E0079D8CB /* SeSACColor.swift in Sources */,
 				FA68716C2B7D101E0079D8CB /* AddTodoTableHeaderView.swift in Sources */,
+				FAE284022B83D8D700AE7EA2 /* AddTodoImageTableViewCell.swift in Sources */,
 				FAB4FF4F2B7CD19500B564DB /* ViewController.swift in Sources */,
 				FA6871752B7D2C630079D8CB /* TagViewController.swift in Sources */,
 				FA6871672B7CFE120079D8CB /* AddTodoTableViewCell.swift in Sources */,
+				FAE284052B83F84200AE7EA2 /* Filemanager+Extension.swift in Sources */,
 				FA68716F2B7D1D2D0079D8CB /* DueDateViewController.swift in Sources */,
 				FAB4FF602B7CD2AF00B564DB /* BaseViewController.swift in Sources */,
 				FAB4FF4B2B7CD19500B564DB /* AppDelegate.swift in Sources */,
