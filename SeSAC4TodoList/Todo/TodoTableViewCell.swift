@@ -97,7 +97,6 @@ class TodoTableViewCell: UITableViewCell {
         dateLabel.snp.makeConstraints { make in
             make.top.equalTo(memoTextLabel.snp.bottom).offset(4)
             make.leading.equalTo(contentView.safeAreaLayoutGuide).offset(32)
-            make.bottom.equalTo(pickedImageView.snp.top).inset(4)
             make.width.lessThanOrEqualTo(88)
         }
         
@@ -105,7 +104,6 @@ class TodoTableViewCell: UITableViewCell {
             make.top.equalTo(memoTextLabel.snp.bottom).offset(4)
             make.leading.equalTo(dateLabel.snp.trailing).offset(4)
             make.trailing.equalTo(contentView.safeAreaLayoutGuide).inset(8)
-            make.bottom.equalTo(dateLabel.snp.bottom)
         }
         
         pickedImageView.snp.makeConstraints { make in

@@ -54,7 +54,8 @@ final class CategoryViewController: BaseViewController {
     }
     
     @objc func didListAddButtonTapped() {
-        print(#function)
+        let vc = UINavigationController(rootViewController: AddListViewController())
+        present(vc, animated: true)
     }
     
     override func configureHierarchy() {

@@ -63,6 +63,21 @@ enum TodoType: String, CaseIterable {
     }
 }
 
+class TodoCategory: Object {
+    @Persisted(primaryKey: true) var id: ObjectId
+    @Persisted var name: String
+    @Persisted var regDate: Date
+    @Persisted var color: Int?
+    
+    @Persisted var todo: List<TodoModel>
+    
+    convenience init(name: String, regDate: Date) {
+        self.init()
+        self.name = name
+        self.regDate = regDate
+    }
+}
+
 class TodoModel: Object {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var title: String
@@ -72,6 +87,8 @@ class TodoModel: Object {
     @Persisted var priority: Int?
     @Persisted var isCompleted: Bool
     @Persisted var isFlagged: Bool?
+    
+    @Persisted(originProperty: "todo") var main: LinkingObjects<TodoCategory>
 
     convenience init(title: String, memo: String? = nil, dueDate: Date? = nil, tag: String? = nil, priority: Int? = nil, isCompleted: Bool = false, isFlagged: Bool? = nil) {
         self.init()
