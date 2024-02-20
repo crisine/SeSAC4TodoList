@@ -11,12 +11,18 @@ import RealmSwift
 final class CategoryViewController: BaseViewController {
 
     private let titleLabel = UILabel()
-    
     private let todoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: configureCollectionViewFlowLayout())
+    private let categoryTableView = UITableView()
 
     private let todoTypeList = TodoType.allCases
+    private let colorList = ColorList.allCases
     
-    var todoList: Results<TodoModel>!
+    private var todoList: Results<TodoModel>!
+    private var categoryList: Results<TodoCategory>! {
+        didSet {
+            categoryTableView.reloadData()
+        }
+    }
     
     private let realm = try! Realm()
     
@@ -26,9 +32,18 @@ final class CategoryViewController: BaseViewController {
         todoCollectionView.delegate = self
         todoCollectionView.dataSource = self
         todoCollectionView.register(CategoryCollectionViewCell.self, forCellWithReuseIdentifier: "CategoryCollectionViewCell")
+        todoCollectionView.isScrollEnabled = false
+        
+        categoryTableView.delegate = self
+        categoryTableView.dataSource = self
+        categoryTableView.register(CategoryTableViewCell.self, forCellReuseIdentifier: CategoryTableViewCell.identifier)
+        categoryTableView.isScrollEnabled = false
         
         navigationController?.isToolbarHidden = false
-        
+        configureToolbarItems()
+    }
+    
+    private func configureToolbarItems() {
         let customizedTodoAddButton = UIButton(type: .system)
     
         customizedTodoAddButton.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
@@ -46,6 +61,7 @@ final class CategoryViewController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         todoList = realm.objects(TodoModel.self)
+        categoryList = realm.objects(TodoCategory.self)
     }
     
     @objc func didTodoAddButtonTapped() {
@@ -59,7 +75,7 @@ final class CategoryViewController: BaseViewController {
     }
     
     override func configureHierarchy() {
-        [titleLabel, todoCollectionView].forEach { subView in
+        [titleLabel, todoCollectionView, categoryTableView].forEach { subView in
             view.addSubview(subView)
         }
     }
@@ -73,12 +89,20 @@ final class CategoryViewController: BaseViewController {
         
         todoCollectionView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(16)
-            make.horizontalEdges.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(UIScreen.main.bounds.width / 1.5)
+            make.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        categoryTableView.snp.makeConstraints { make in
+            make.top.equalTo(todoCollectionView.snp.bottom).offset(16)
+            make.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(200)
         }
     }
     
     override func configureView() {
         todoCollectionView.backgroundColor = .black
+        categoryTableView.backgroundColor = .black
         
         titleLabel.font = .boldSystemFont(ofSize: 32)
         titleLabel.textColor = .darkGray
@@ -161,4 +185,29 @@ extension CategoryViewController: UICollectionViewDelegate, UICollectionViewData
         navigationController?.pushViewController(vc, animated: true)
     }
     
+}
+
+extension CategoryViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 64
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return categoryList.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: CategoryTableViewCell.identifier, for: indexPath) as! CategoryTableViewCell
+        let data = categoryList[indexPath.row]
+        
+        if let colorIndex = data.color {
+            cell.iconImageBackView.backgroundColor = colorList[colorIndex].color
+        }
+        
+        cell.titleLabel.text = data.name
+        cell.subtitleLabel.text = String(data.todo.count)
+        
+        return cell
+    }
 }

@@ -13,6 +13,7 @@ enum AddTodoCategory: String, CaseIterable {
     case tag = "태그"
     case priority = "우선순위"
     case image = "이미지 추가"
+    case category = "목록"
 }
 
 protocol PassDataDelegate {
@@ -21,8 +22,10 @@ protocol PassDataDelegate {
 
 class AddTodoViewController: BaseViewController, PassDataDelegate {
 
-    let addTodoTableView = UITableView()
-    let todoCategoryList = AddTodoCategory.allCases
+    private let addTodoTableView = UITableView()
+    private let todoCategoryList = AddTodoCategory.allCases
+    private let colorList = ColorList.allCases
+    
     lazy var todoHeaderView = AddTodoTableHeaderView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 160))
     
     func priorityReceived(priority: Int?) {
@@ -54,6 +57,11 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
             addTodoTableView.reloadData()
         }
     }
+    var selectedCategory: TodoCategory? {
+        didSet {
+            addTodoTableView.reloadData()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,6 +72,7 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
         addTodoTableView.dataSource = self
         addTodoTableView.register(AddTodoTableViewCell.self, forCellReuseIdentifier: "AddTodoTableViewCell")
         addTodoTableView.register(AddTodoImageTableViewCell.self, forCellReuseIdentifier: "AddTodoImageTableViewCell")
+        addTodoTableView.register(CategoryTableViewCell.self, forCellReuseIdentifier: CategoryTableViewCell.identifier)
 
         
         NotificationCenter.default.addObserver(self, selector: #selector(recievedNotificationFromTagViewController), name: NSNotification.Name("tagNotification"), object: nil)
@@ -125,7 +134,12 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
                         // TODO: 수정 뷰에서는 완료 여부를 수정할 수 있게 하면 여기서 self.modifyTodo.isCompleted가 아니라, self.isCompleted 이렇게 접근해야 한다.
                         realm.create(TodoModel.self, value: ["id": self.modifyTodo?.id, "title": title, "memo": memo, "dueDate": self.selectedDate, "tag": self.selectedTag, "priority": self.selectedPriority, "isCompleted": self.modifyTodo?.isCompleted, "isFlagged": self.modifyTodo?.isFlagged], update: .modified)
                     } else {
-                        realm.add(data)
+                        // 카테고리가 지정되어 있는 경우 append
+                        if let selectedCategory = self.selectedCategory {
+                            selectedCategory.todo.append(data)
+                        } else {
+                            realm.add(data)
+                        }
                     }
                     print("Realm Create Called")
                 }
@@ -248,6 +262,26 @@ extension AddTodoViewController: UITableViewDelegate, UITableViewDataSource {
             }
             
             return cell
+        case .category:
+            let cell = tableView.dequeueReusableCell(withIdentifier: CategoryTableViewCell.identifier, for: indexPath) as! CategoryTableViewCell
+            
+            cell.backView.backgroundColor = SeSACColor.slightDarkGray.color
+            cell.backView.snp.remakeConstraints { make in
+                make.edges.equalTo(cell.contentView.safeAreaLayoutGuide).inset(8)
+            }
+            
+            // TODO: 상세 뷰에서 선택된 목록의 내용과 색으로 변경해 주어야 함
+            if let data = selectedCategory {
+                if let colorIndex = data.color {
+                    cell.iconImageBackView.backgroundColor = colorList[colorIndex].color
+                }
+                
+                cell.titleLabel.text = data.name
+            } else {
+                cell.titleLabel.text = "목록"
+            }
+
+            return cell
         }
     }
     
@@ -276,8 +310,15 @@ extension AddTodoViewController: UITableViewDelegate, UITableViewDataSource {
             vc.delegate = self
             navigationController?.pushViewController(vc, animated: true)
         case .image:
-            // TODO: 이미지 추가용 팝업 띄우기 -> 버튼에 이벤트 붙여야 함
-            print("")
+            print("") // 안에 존재하는 버튼에서 처리 중
+        case .category:
+            let vc = AddListFromExistViewController()
+            
+            vc.categorySpace = { category in
+                self.selectedCategory = category
+            }
+            
+            navigationController?.pushViewController(vc, animated: true)
         }
     }
     
