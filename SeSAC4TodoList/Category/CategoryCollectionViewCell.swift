@@ -11,6 +11,7 @@ import SnapKit
 final class CategoryCollectionViewCell: UICollectionViewCell {
     
     let titleLabel = UILabel()
+    let iconImageBackView = UIView()
     let iconImageView = UIImageView()
     let countLabel = UILabel()
     let categoryLabel = UILabel()
@@ -29,43 +30,43 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
 
     
     private func configureHierarchy() {
-        [titleLabel, iconImageView, countLabel, categoryLabel].forEach {
+        [titleLabel, iconImageBackView, iconImageView, countLabel, categoryLabel].forEach {
             contentView.addSubview($0)
         }
     }
     
     private func configureConstraints() {
         
-        iconImageView.snp.makeConstraints { make in
+        iconImageBackView.snp.makeConstraints { make in
             make.top.leading.equalTo(contentView.safeAreaLayoutGuide).offset(8)
             make.size.equalTo(40)
         }
         
+        iconImageView.snp.makeConstraints { make in
+            make.centerX.centerY.equalTo(iconImageBackView)
+            make.size.equalTo(32)
+        }
+        
         categoryLabel.snp.makeConstraints { make in
-            make.top.equalTo(iconImageView.snp.bottom).offset(8)
-            make.leading.equalTo(iconImageView.snp.leading)
+            make.top.equalTo(iconImageBackView.snp.bottom).offset(8)
+            make.leading.equalTo(iconImageBackView.snp.leading)
             make.width.greaterThanOrEqualTo(120)
         }
         
         countLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView.safeAreaLayoutGuide).offset(4)
             make.trailing.equalTo(contentView.safeAreaLayoutGuide)
-            make.leading.equalTo(iconImageView.snp.trailing).offset(8)
+            make.leading.equalTo(iconImageBackView.snp.trailing).offset(8)
             make.trailing.equalTo(contentView.safeAreaLayoutGuide).inset(8)
         }
     }
     
     private func configureView() {
-        // TODO: View Lifecycle를 조사하고, view의 크기가 결정되는 시점에 이것을 불러야 함.
-        DispatchQueue.main.async {
-            self.iconImageView.clipsToBounds = true
-            self.iconImageView.layer.cornerRadius = self.iconImageView.frame.width / 2
-            self.iconImageView.contentMode = .scaleToFill
-        }
-        
-        print(iconImageView.frame.height)
-        
+        iconImageBackView.clipsToBounds = true
+        iconImageBackView.layer.cornerRadius = 20
+    
         iconImageView.tintColor = .white
+        iconImageView.contentMode = .scaleAspectFit
         
         categoryLabel.font = .boldSystemFont(ofSize: 16)
         categoryLabel.textColor = .gray
