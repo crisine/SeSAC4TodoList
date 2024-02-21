@@ -10,6 +10,7 @@ import RealmSwift
 
 class TodoViewController: BaseViewController {
 
+    let repository = TodoRepository()
     let todoTableView = UITableView()
     var viewType: TodoType?
     var category: TodoCategory?
@@ -32,18 +33,18 @@ class TodoViewController: BaseViewController {
         
         let orderByDueDate = UIAction(title: "마감일 순으로 보기", image: UIImage(systemName: "calendar.badge.clock")) { _ in
             
-            self.filteredTodoList = self.filteredTodoList.sorted(byKeyPath: "dueDate", ascending: true)
+            self.filteredTodoList = self.allTodoList.sorted(byKeyPath: "dueDate", ascending: true)
         }
         
         let orderByTitle = UIAction(title: "제목 순으로 보기", image: UIImage(systemName: "text.line.first.and.arrowtriangle.forward")) { _ in
             
-            self.filteredTodoList = self.filteredTodoList.sorted(byKeyPath: "title", ascending: true)
+            self.filteredTodoList = self.allTodoList.sorted(byKeyPath: "title", ascending: true)
         }
         
         let displayLowPriorityOnly = UIAction(title: "우선순위 낮음만 보기", image: UIImage(systemName: "exclamationmark")) { _ in
             
             let predicate = NSPredicate(format: "priority == 0")
-            self.filteredTodoList = self.filteredTodoList.filter(predicate)
+            self.filteredTodoList = self.allTodoList.filter(predicate)
         }
         
         let rightBarButtonItem = UIBarButtonItem(title: "정렬 순서", image: UIImage(systemName: "ellipsis.circle"), primaryAction: nil, menu: UIMenu(title: "정렬 순서", children: [orderByDueDate, orderByTitle, displayLowPriorityOnly]))
@@ -61,9 +62,7 @@ class TodoViewController: BaseViewController {
             return
         }
         
-        let realm = try! Realm()
-        
-        allTodoList = realm.objects(TodoModel.self)
+        allTodoList = repository.fetch()
         
         switch viewType {
         case .today:
@@ -93,7 +92,7 @@ class TodoViewController: BaseViewController {
         case .category:
             // TODO: 이 부분의 코드가 나중엔 전체를 떼올 때 사용되어야 한다.
             // 지금 못 쓰는 이유는 기본적으로 목록이 지정되지 않은 경우 Default 목록으로 가야 하는데 그게 없기 때문
-            allTodoList = realm.objects(TodoModel.self).where { todoModel in
+            allTodoList = repository.fetch().where { todoModel in
                 todoModel.main.name == category!.name
             }
         }
@@ -124,31 +123,20 @@ class TodoViewController: BaseViewController {
     @objc func didTodoCellCircleButtonTapped(sender: UIButton) {
         let index = sender.tag
         
-        print("cell : \(index) tapped")
-        
         let cell = todoTableView.cellForRow(at: IndexPath(row: index, section: 0)) as? TodoTableViewCell
         
         let todo = filteredTodoList[index]
         
-        print("isCompleted : \(todo.isCompleted)")
-        
         if todo.isCompleted == false {
             cell?.circleButton.setImage(UIImage(systemName: "circle.inset.filled"), for: .normal)
             cell?.circleButton.tintColor = .systemBlue
-            
-            let realm = try! Realm()
-            try! realm.write {
-                todo.isCompleted = true
-            }
         } else if todo.isCompleted == true {
             cell?.circleButton.setImage(UIImage(systemName: "circle"), for: .normal)
             cell?.circleButton.tintColor = .gray
-            
-            let realm = try! Realm()
-            try! realm.write {
-                todo.isCompleted = false
-            }
         }
+        
+        todo.isCompleted.toggle()
+        repository.update(item: todo)
     }
 }
 
@@ -236,17 +224,9 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
         
         let delete = UIContextualAction(style: .destructive, title: "삭제") { (UIContextualAction, UIView, success: @escaping (Bool) -> Void) in
             
-            let index = indexPath.row
-            let realm = try! Realm()
+            let todo = self.filteredTodoList[indexPath.row]
             
-            do {
-                try realm.write {
-                    realm.delete(self.filteredTodoList[index])
-                }
-            } catch {
-                dump(error)
-                self.showAlert(title: "에러", message: "할 일을 삭제하지 못했습니다.", okTitle: "확인", handler: { })
-            }
+            self.repository.delete(item: todo)
             
             tableView.deleteRows(at: [indexPath], with: .automatic)
             tableView.reloadData()
