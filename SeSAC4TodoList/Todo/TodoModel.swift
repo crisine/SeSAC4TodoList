@@ -31,6 +31,7 @@ enum TodoType: String, CaseIterable {
     case all = "전체"
     case flagged = "깃발 표시"
     case completed = "완료됨"
+    case category = "목록"
     
     var image: UIImage? {
         switch self {
@@ -44,6 +45,8 @@ enum TodoType: String, CaseIterable {
             return UIImage(systemName: "flag.fill")
         case .completed:
             return UIImage(systemName: "checkmark")
+        case .category:
+            return UIImage(systemName: "list.bullet")
         }
     }
     
@@ -59,6 +62,8 @@ enum TodoType: String, CaseIterable {
             return .systemYellow
         case .completed:
             return .systemGray
+        case .category:
+            return .systemBlue
         }
     }
 }

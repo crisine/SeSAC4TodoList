@@ -125,7 +125,7 @@ extension CategoryViewController: UICollectionViewDelegate, UICollectionViewData
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return todoTypeList.count
+        return todoTypeList.count - 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -159,6 +159,8 @@ extension CategoryViewController: UICollectionViewDelegate, UICollectionViewData
         case .completed:
             let predicate = NSPredicate(format: "isCompleted == TRUE")
             cell.countLabel.text = String(todoList.filter(predicate).count)
+        default:
+            print()
         }
         
         return cell
@@ -180,6 +182,8 @@ extension CategoryViewController: UICollectionViewDelegate, UICollectionViewData
             vc.viewType = .flagged
         case .completed:
             vc.viewType = .completed
+        default:
+            return
         }
         
         navigationController?.pushViewController(vc, animated: true)
@@ -209,5 +213,19 @@ extension CategoryViewController: UITableViewDelegate, UITableViewDataSource {
         cell.subtitleLabel.text = String(data.todo.count)
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        // TODO: 선택된 category 기준으로 상세 뷰로 이동
+        let selectedCategory = categoryList[indexPath.row]
+        
+        let vc = TodoViewController()
+        vc.category = selectedCategory
+        vc.viewType = .category
+        
+        print("selectedCategory name: \(selectedCategory.name)")
+        
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

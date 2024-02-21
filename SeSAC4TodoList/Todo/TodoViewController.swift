@@ -12,6 +12,7 @@ class TodoViewController: BaseViewController {
 
     let todoTableView = UITableView()
     var viewType: TodoType?
+    var category: TodoCategory?
     
     var allTodoList: Results<TodoModel>!
     var filteredTodoList: Results<TodoModel>! {
@@ -88,6 +89,13 @@ class TodoViewController: BaseViewController {
         case .completed:
             let predicate = NSPredicate(format: "isCompleted == TRUE")
             allTodoList = allTodoList.filter(predicate)
+            
+        case .category:
+            // TODO: 이 부분의 코드가 나중엔 전체를 떼올 때 사용되어야 한다.
+            // 지금 못 쓰는 이유는 기본적으로 목록이 지정되지 않은 경우 Default 목록으로 가야 하는데 그게 없기 때문
+            allTodoList = realm.objects(TodoModel.self).where { todoModel in
+                todoModel.main.name == category!.name
+            }
         }
         
         filteredTodoList = allTodoList
