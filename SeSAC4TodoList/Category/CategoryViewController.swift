@@ -23,8 +23,15 @@ final class CategoryViewController: BaseViewController {
             categoryTableView.reloadData()
         }
     }
+
+    private let todoRepository = TodoRepository()
+    private let todoCategoryRepository = TodoCategoryRepository()
     
-    private let realm = try! Realm()
+    override func viewWillAppear(_ animated: Bool) {
+        todoList = todoRepository.fetch()
+        categoryList = todoCategoryRepository.fetch()
+        todoCollectionView.reloadData()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,18 +66,15 @@ final class CategoryViewController: BaseViewController {
         toolbarItems = [todoAddButton, flexibleSpace, listAddButton]
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        todoList = realm.objects(TodoModel.self)
-        categoryList = realm.objects(TodoCategory.self)
-    }
-    
     @objc func didTodoAddButtonTapped() {
         let vc = UINavigationController(rootViewController: AddTodoViewController())
+        vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true)
     }
     
     @objc func didListAddButtonTapped() {
         let vc = UINavigationController(rootViewController: AddListViewController())
+        vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true)
     }
     

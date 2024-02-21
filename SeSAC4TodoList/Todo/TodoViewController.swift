@@ -135,8 +135,12 @@ class TodoViewController: BaseViewController {
             cell?.circleButton.tintColor = .gray
         }
         
-        todo.isCompleted.toggle()
-        repository.update(item: todo)
+        // TODO: repository 의 Update 메서드를 변경할 필요 있음
+        let localRealm = try! Realm()
+        
+        try! localRealm.write {
+            todo.isCompleted.toggle()
+        }
     }
 }
 
@@ -216,6 +220,7 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
             vc.modifyTodo = todo
             vc.pickedImage = self.loadImageToDocument(filename: "\(todo.id)")
             
+            nav.modalPresentationStyle = .fullScreen
             self.present(nav, animated: true)
             
             success(true)

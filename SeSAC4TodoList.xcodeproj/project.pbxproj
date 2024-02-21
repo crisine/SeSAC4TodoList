@@ -21,6 +21,8 @@
 		FA16AC832B8569B0008C00CC /* AddListFromExistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA16AC822B8569B0008C00CC /* AddListFromExistViewController.swift */; };
 		FA16AC8E2B86696F008C00CC /* TodoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA16AC8D2B86696F008C00CC /* TodoRepository.swift */; };
 		FA16AC902B8669CA008C00CC /* TodoRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA16AC8F2B8669CA008C00CC /* TodoRepositoryProtocol.swift */; };
+		FA16AC922B8672CF008C00CC /* TodoCategoryRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA16AC912B8672CF008C00CC /* TodoCategoryRepositoryProtocol.swift */; };
+		FA16AC942B8672F8008C00CC /* TodoCategoryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA16AC932B8672F8008C00CC /* TodoCategoryRepository.swift */; };
 		FA57EFEE2B853A7F00B83420 /* AddListSelectColorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA57EFED2B853A7F00B83420 /* AddListSelectColorTableViewCell.swift */; };
 		FA6871642B7CFC1B0079D8CB /* AddTodoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6871632B7CFC1B0079D8CB /* AddTodoViewController.swift */; };
 		FA6871672B7CFE120079D8CB /* AddTodoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6871662B7CFE120079D8CB /* AddTodoTableViewCell.swift */; };
@@ -59,6 +61,8 @@
 		FA16AC822B8569B0008C00CC /* AddListFromExistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddListFromExistViewController.swift; sourceTree = "<group>"; };
 		FA16AC8D2B86696F008C00CC /* TodoRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoRepository.swift; sourceTree = "<group>"; };
 		FA16AC8F2B8669CA008C00CC /* TodoRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoRepositoryProtocol.swift; sourceTree = "<group>"; };
+		FA16AC912B8672CF008C00CC /* TodoCategoryRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoCategoryRepositoryProtocol.swift; sourceTree = "<group>"; };
+		FA16AC932B8672F8008C00CC /* TodoCategoryRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoCategoryRepository.swift; sourceTree = "<group>"; };
 		FA57EFED2B853A7F00B83420 /* AddListSelectColorTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddListSelectColorTableViewCell.swift; sourceTree = "<group>"; };
 		FA6871632B7CFC1B0079D8CB /* AddTodoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTodoViewController.swift; sourceTree = "<group>"; };
 		FA6871662B7CFE120079D8CB /* AddTodoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTodoTableViewCell.swift; sourceTree = "<group>"; };
@@ -116,6 +120,7 @@
 			children = (
 				FA165A742B852C50002EE3CE /* SeSACProtocol.swift */,
 				FA16AC8F2B8669CA008C00CC /* TodoRepositoryProtocol.swift */,
+				FA16AC912B8672CF008C00CC /* TodoCategoryRepositoryProtocol.swift */,
 			);
 			path = Protocol;
 			sourceTree = "<group>";
@@ -124,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				FA16AC8D2B86696F008C00CC /* TodoRepository.swift */,
+				FA16AC932B8672F8008C00CC /* TodoCategoryRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -340,9 +346,11 @@
 				FA68716C2B7D101E0079D8CB /* AddTodoTableHeaderView.swift in Sources */,
 				FAE284022B83D8D700AE7EA2 /* AddTodoImageTableViewCell.swift in Sources */,
 				FAB4FF4F2B7CD19500B564DB /* ViewController.swift in Sources */,
+				FA16AC922B8672CF008C00CC /* TodoCategoryRepositoryProtocol.swift in Sources */,
 				FA57EFEE2B853A7F00B83420 /* AddListSelectColorTableViewCell.swift in Sources */,
 				FA6871752B7D2C630079D8CB /* TagViewController.swift in Sources */,
 				FA6871672B7CFE120079D8CB /* AddTodoTableViewCell.swift in Sources */,
+				FA16AC942B8672F8008C00CC /* TodoCategoryRepository.swift in Sources */,
 				FAE284052B83F84200AE7EA2 /* Filemanager+Extension.swift in Sources */,
 				FA165A722B852B74002EE3CE /* BaseTableViewCell.swift in Sources */,
 				FA68716F2B7D1D2D0079D8CB /* DueDateViewController.swift in Sources */,

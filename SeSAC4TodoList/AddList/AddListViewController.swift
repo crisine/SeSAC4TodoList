@@ -34,13 +34,13 @@ enum ColorList: CaseIterable {
 
 class AddListViewController: BaseViewController {
     
-    let addListTableView = UITableView()
-    let colorList = ColorList.allCases
-    let realm = try! Realm()
+    private let addListTableView = UITableView()
+    private let colorList = ColorList.allCases
+    private let repository = TodoCategoryRepository()
     
-    var isListNameTextFieldEmpty = true
-    var listName: String?
-    var selectedColorIndex: Int? {
+    private var isListNameTextFieldEmpty = true
+    private var listName: String?
+    private var selectedColorIndex: Int? {
         didSet {
             addListTableView.reloadData()
         }
@@ -89,23 +89,15 @@ class AddListViewController: BaseViewController {
     
     @objc func didAddListBarButtonItemTapped() {
         
-        // TODO: 새로운 목록을 생성하고 Realm에 반영되는지 확인
         if !isListNameTextFieldEmpty && listName != nil {
-            // 저장 처리
-            print(realm.configuration.fileURL)
             
             let data = TodoCategory()
+            
             data.name = listName!
             data.regDate = Date()
             data.color = selectedColorIndex
             
-            do {
-                try realm.write {
-                    realm.add(data)
-                }
-            } catch {
-                dump(error)
-            }
+            repository.add(item: data)
             
             dismiss(animated: true)
         } else {

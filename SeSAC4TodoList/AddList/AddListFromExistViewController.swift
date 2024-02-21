@@ -13,7 +13,7 @@ class AddListFromExistViewController: BaseViewController {
     
     private let categoryListTableView = UITableView()
     private var categoryList: Results<TodoCategory>!
-    private let realm = try! Realm()
+    private let repository = TodoCategoryRepository()
     private let colorList = ColorList.allCases
     
     private var selectedCategory: TodoCategory?
@@ -26,7 +26,7 @@ class AddListFromExistViewController: BaseViewController {
         categoryListTableView.dataSource = self
         categoryListTableView.register(CategoryTableViewCell.self, forCellReuseIdentifier: CategoryTableViewCell.identifier)
         
-        categoryList = realm.objects(TodoCategory.self)
+        categoryList = repository.fetch()
     }
     
     override func viewWillDisappear(_ animated: Bool) {

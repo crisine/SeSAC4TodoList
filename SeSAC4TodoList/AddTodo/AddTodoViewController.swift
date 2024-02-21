@@ -32,6 +32,8 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
         selectedPriority = priority
     }
     
+    private let repository = TodoRepository()
+    
     var titleString: String?
     var memoString: String?
     var modifyMode: Bool = false
@@ -113,10 +115,6 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
         }
         
         showAlert(title: "새 할일", message: "저장하시겠습니까?", okTitle: "저장") {
-            // TODO: DB를 통해 저장 등...
-            
-            let realm = try! Realm()
-            print(realm.configuration.fileURL)
             
             if let headerView = self.addTodoTableView.tableHeaderView as? AddTodoTableHeaderView {
                 
@@ -126,24 +124,19 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
                 
                 let memo = headerView.memoTextView.text == "메모" ? nil : headerView.memoTextView.text
                 
-                // TODO: 선택된 중요도 넣기
                 let data = TodoModel(title: title, memo: memo, dueDate: self.selectedDate, tag: self.selectedTag, priority: self.selectedPriority)
                 
-                try! realm.write {
-                    if self.modifyMode == true {
-                        // TODO: 수정 뷰에서는 완료 여부를 수정할 수 있게 하면 여기서 self.modifyTodo.isCompleted가 아니라, self.isCompleted 이렇게 접근해야 한다.
-                        realm.create(TodoModel.self, value: ["id": self.modifyTodo?.id, "title": title, "memo": memo, "dueDate": self.selectedDate, "tag": self.selectedTag, "priority": self.selectedPriority, "isCompleted": self.modifyTodo?.isCompleted, "isFlagged": self.modifyTodo?.isFlagged], update: .modified)
+                // TODO: 기본 카테고리 ('목록') 이 존재하게되면 선택된 카테고리의 여부를 중시하지 않아도 되니 수정 요함
+                if let selectedCategory = self.selectedCategory {
+                    self.repository.append(category: selectedCategory, item: data)
+                } else {
+                    if let modifyTodo = self.modifyTodo {
+                        self.repository.update(id: modifyTodo.id, newItem: data)
                     } else {
-                        // 카테고리가 지정되어 있는 경우 append
-                        if let selectedCategory = self.selectedCategory {
-                            selectedCategory.todo.append(data)
-                        } else {
-                            realm.add(data)
-                        }
+                        self.repository.add(item: data)
                     }
-                    print("Realm Create Called")
                 }
-                
+            
                 if let pickedImage = self.pickedImage {
                     self.saveImageToDocument(image: pickedImage, filename: "\(data.id)")
                 }
@@ -184,6 +177,7 @@ class AddTodoViewController: BaseViewController, PassDataDelegate {
         let vc = UIImagePickerController()
         vc.delegate = self
         vc.overrideUserInterfaceStyle = .dark
+        vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true)
     }
 

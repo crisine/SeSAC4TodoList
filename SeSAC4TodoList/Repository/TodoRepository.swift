@@ -22,6 +22,16 @@ class TodoRepository: TodoRepositoryProtocol {
         }
     }
     
+    func append(category: TodoCategory, item: TodoModel) {
+        do {
+            try realm.write {
+                category.todo.append(item)
+            }
+        } catch {
+            print("an error occured while appending items on \(category) on Realm databse: \(error)")
+        }
+    }
+    
     func fetch() -> RealmSwift.Results<TodoModel> {
         return realm.objects(TodoModel.self)
     }
@@ -30,10 +40,17 @@ class TodoRepository: TodoRepositoryProtocol {
         return realm.objects(TodoModel.self).filter(predicate)
     }
     
-    func update(item: TodoModel) {
+    func update(id: ObjectId, newItem: TodoModel) {
         do {
             try realm.write {
-                realm.add(item, update: .modified)
+                realm.create(TodoModel.self,
+                             value: ["id": id,
+                                     "title": newItem.title,
+                                     "memo": newItem.memo,
+                                     "dueDate": newItem.dueDate,
+                                     "tag": newItem.tag,
+                                     "priority": newItem.priority],
+                             update: .modified)
             }
         } catch {
             print("an error occured while updating items to Realm databse: \(error)")
@@ -41,7 +58,13 @@ class TodoRepository: TodoRepositoryProtocol {
     }
     
     func delete(item: TodoModel) {
-        realm.delete(item)
+        do {
+            try realm.write {
+                realm.delete(item)
+            }
+        } catch {
+            print("an error occured while deleting item from Realm databse: \(error)")
+        }
     }
     
 }
